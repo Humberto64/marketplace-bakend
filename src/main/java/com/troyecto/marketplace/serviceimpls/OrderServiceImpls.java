@@ -25,17 +25,17 @@ public class OrderServiceImpls implements OrderService {
     }
 
     @Override
-    public OrderDTO updateOrder(OrderDTO orderDTO) {
+    public OrderDTO updateOrder(Long id, OrderDTO orderDTO) {
         return null;
     }
 
     @Override
-    public String cancelOrder(OrderDTO orderDTO) {
+    public String cancelOrder(Long id) {
         return "";
     }
 
     @Override
-    public OrderDTO getOrderById(OrderDTO orderDTO) {
+    public OrderDTO getOrderById(Long id) {
         return null;
     }
 
