@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 @Data
 public class StoreDTO {
 
@@ -20,4 +22,8 @@ public class StoreDTO {
 
     @NotNull(message = "El ID del dueño (vendedor) es obligatorio.")
     private Long ownerId;
+
+    private LocalDateTime createdDate;
+    private boolean isActive;
+
 }

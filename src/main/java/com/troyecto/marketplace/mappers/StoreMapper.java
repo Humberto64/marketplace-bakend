@@ -10,13 +10,15 @@ public class StoreMapper {
     /**
      * Convierte el DTO (recibido por red) en la Entity (para guardar en DB).
      */
-    public Store toEntity(StoreDTO dto) {
+    public static Store toEntity(StoreDTO dto) {
         Store entity = new Store();
 
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
         entity.setCategory(dto.getCategory());
         entity.setOwnerId(dto.getOwnerId());
+        entity.setCreatedDate(dto.getCreatedDate());
+        entity.setActive(dto.isActive());
 
         // NOTA: Los campos creados por el backend (createdDate, isActive) NO se mapean aquí.
         return entity;
@@ -25,7 +27,7 @@ public class StoreMapper {
     /**
      * Convierte la Entity (datos de DB) en un DTO (para responder por red).
      */
-    public StoreDTO toDTO(Store entity) {
+    public static StoreDTO toDTO(Store entity) {
         StoreDTO dto = new StoreDTO();
 
         dto.setName(entity.getName());

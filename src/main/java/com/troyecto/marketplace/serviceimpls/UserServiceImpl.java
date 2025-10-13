@@ -7,6 +7,7 @@ import com.troyecto.marketplace.mappers.UserMapper;
 import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-
+    @Autowired
     private final UserRepository userRepository;
 
     @Override
