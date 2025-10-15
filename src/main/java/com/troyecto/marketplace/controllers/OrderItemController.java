@@ -2,7 +2,6 @@ package com.troyecto.marketplace.controllers;
 
 
 import com.troyecto.marketplace.dtos.OrderItemDTO;
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.services.OrderItemService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
-//@RequestMapping("/api/users") // Define la URL base para todos los endpoints en esta clase.
+@RequestMapping("/api/orderItems") // Define la URL base para todos los endpoints en esta clase.
 @CrossOrigin("*")
 @AllArgsConstructor // Para inyectar el servicio.
 public class OrderItemController {

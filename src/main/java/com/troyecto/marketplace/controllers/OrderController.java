@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
-//@RequestMapping("/api/users") // Define la URL base para todos los endpoints en esta clase.
+@RequestMapping("/api/orders") // Define la URL base para todos los endpoints en esta clase.
 @CrossOrigin("*")
 @AllArgsConstructor // Para inyectar el servicio.
 public class OrderController {
