@@ -8,8 +8,6 @@ public class OrderMapper {
         return new OrderDTO(
                 order.getId(),
                 order.getOrderNumber(),
-                order.getBuyer(),
-                order.getSeller(),
                 order.getItems(),
                 order.getSubtotal(),
                 order.getTotalAmount(),
@@ -25,8 +23,6 @@ public class OrderMapper {
         Order order = new Order();
         order.setId(orderDTO.getId());
         order.setOrderNumber(orderDTO.getOrderNumber());
-        order.setBuyer(orderDTO.getBuyer());
-        order.setSeller(orderDTO.getSeller());
         order.setItems(orderDTO.getItems());
         order.setSubtotal(orderDTO.getSubtotal());
         order.setTotalAmount(orderDTO.getTotalAmount());

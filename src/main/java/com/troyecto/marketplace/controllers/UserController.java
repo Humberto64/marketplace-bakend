@@ -4,6 +4,7 @@ package com.troyecto.marketplace.controllers;
 import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,8 @@ import java.util.List;
 public class UserController {
 
     // Inyectamos el servicio que tiene toda la lógica de negocio.
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     // Endpoint para CREAR un usuario.
     // Se activa con una petición POST a http://localhost:8080/api/users

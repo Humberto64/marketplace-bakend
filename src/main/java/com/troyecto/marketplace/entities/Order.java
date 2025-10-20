@@ -1,5 +1,6 @@
 package com.troyecto.marketplace.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,10 +20,10 @@ public class Order {
     private Long id;
     @Column(nullable = false)
     private String orderNumber;
-    @Column(nullable = false)
-    private String buyer;   //Cambiar despues a ManytoOne con user
-    @Column(nullable = false)
-    private String seller;  //Cambiar despues a ManytoOne con user
+    //@Column(nullable = false)
+    //private String buyer;   //Cambiar despues a ManytoOne con user
+    //@Column(nullable = false)
+    //private String seller;  //Cambiar despues a ManytoOne con user
     @Column(nullable = false)
     private Long items;     //Cambiar despues a List<orderItems>
     @Column(nullable = false)
@@ -39,4 +40,11 @@ public class Order {
     private String paymentStatus;
     @Column(nullable = false)
     private LocalDateTime orderDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id",
+                nullable = false,
+                foreignKey = @ForeignKey(name = "fk_order_user"))
+    @JsonBackReference
+    private User user;
 }

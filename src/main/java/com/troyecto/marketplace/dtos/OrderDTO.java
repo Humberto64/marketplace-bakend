@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 public class OrderDTO {
     private Long id;
     private String orderNumber;
-    private String buyer;   //Cambiar despues a ManytoOne con user
-    private String seller;  //Cambiar despues a ManytoOne con user
     private Long items;     //Cambiar despues a List<orderItems>
     private BigDecimal subtotal;
     private BigDecimal totalAmount;

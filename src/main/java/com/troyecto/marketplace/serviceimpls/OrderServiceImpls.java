@@ -2,13 +2,16 @@ package com.troyecto.marketplace.serviceimpls;
 
 import com.troyecto.marketplace.dtos.OrderDTO;
 import com.troyecto.marketplace.entities.Order;
+import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderMapper;
 import com.troyecto.marketplace.repositories.OrderRepository;
+import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,17 +22,20 @@ public class OrderServiceImpls implements OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
-    public OrderDTO createOrder(OrderDTO orderDTO) {
+    public OrderDTO createOrder(Long userId, OrderDTO orderDTO) {
+        User user = verifyUser(userId);
         Order order = OrderMapper.mapOrderDTOtoOrder(orderDTO);
         return OrderMapper.mapOrderToOrderDTO(orderRepository.save(order));
     }
 
     @Override
-    public OrderDTO updateOrder(Long id, OrderDTO orderDTO) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se puede actualizar la orden. Orden no econtranda con id: " + id));
+    public OrderDTO updateOrder(Long userId, Long orderId, OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("No se puede actualizar la orden. Orden no econtranda con id: " + orderId));
 
         order.setOrderNumber(orderDTO.getOrderNumber());
         order.setItems(orderDTO.getItems());
@@ -45,31 +51,27 @@ public class OrderServiceImpls implements OrderService {
     }
 
     @Override
-    public String cancelOrder(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Orden no encontrada con id: " + id));
+    public String cancelOrder(Long userId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Orden no encontrada con id: " + orderId));
 
         orderRepository.delete(order);
 
-        return "Orden con ID " + id + "eliminado exitosamente";
+        return "Orden con ID " + orderId + "eliminado exitosamente";
     }
 
     @Override
-    public OrderDTO getOrderById(Long id) {
-
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con id: " + id));
-
-        return OrderMapper.mapOrderToOrderDTO(order);
-    }
-
-    @Override
-    public List<OrderDTO> getAllOrders() {
-
-        List<Order> orders = orderRepository.findAll();
-
-        return orders.stream()
+    @Transactional(readOnly = true)
+    public List<OrderDTO> listByUserId(Long id) {
+        verifyUser(id);
+        return orderRepository.findByUserId(id)
+                .stream()
                 .map(OrderMapper::mapOrderToOrderDTO)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    private User verifyUser(Long id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado id: " + id));
     }
 }

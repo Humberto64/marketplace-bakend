@@ -2,6 +2,8 @@ package com.troyecto.marketplace.dtos;
 
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,4 +19,5 @@ public class UserDTO {
     private String address;
     private String password;
     private String role;
-   }//hola
+    private List<OrderDTO> orders;
+   }
