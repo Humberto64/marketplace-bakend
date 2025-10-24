@@ -32,7 +32,7 @@ public class Product {
     private boolean isAvailable;
 
     @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    @JoinColumn(name = "product_id",
+    @JoinColumn(name = "user_id",
             nullable = false,
             foreignKey = @ForeignKey(name = "fk_product_user"))
     @JsonBackReference

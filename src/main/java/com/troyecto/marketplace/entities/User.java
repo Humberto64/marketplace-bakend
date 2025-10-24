@@ -1,6 +1,7 @@
 
 package com.troyecto.marketplace.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,6 +39,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+
     private List<Order> orders;
 
     public void addOrder(Order order) {
@@ -47,4 +50,8 @@ public class User {
         orders.remove(order);
         order.setUser(null);
     }
-   }
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
+    private List<Product> products = new ArrayList<>();
+
+}
