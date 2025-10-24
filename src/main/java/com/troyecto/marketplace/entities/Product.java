@@ -1,6 +1,7 @@
 package com.troyecto.marketplace.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data // Incluye Getters, Setters, etc. (Lombok)
@@ -37,5 +40,19 @@ public class Product {
             foreignKey = @ForeignKey(name = "fk_product_user"))
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void  addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setProduct(this);
+    }
+
+    public void  removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setProduct(null);
+    }
 
 }

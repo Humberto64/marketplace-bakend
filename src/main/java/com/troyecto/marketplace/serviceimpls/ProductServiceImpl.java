@@ -4,12 +4,11 @@ import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.entities.Product;
 
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
+import com.troyecto.marketplace.mappers.OrderItemMapper;
 import com.troyecto.marketplace.mappers.ProductMapper;
-import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.repositories.ProductRepository;
 import com.troyecto.marketplace.services.ProductService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    @Autowired
-    private ProductRepository productRepository;
+
+    private final ProductRepository productRepository;
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = ProductMapper.mapProductDTOtoProduct(productDTO);
@@ -30,6 +29,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product=productRepository.findById(id).
                 orElseThrow(()->new ResourceNotFoundException("No se puede actualizar. Producto no encontrada con id: " + id));
+
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
@@ -37,6 +37,15 @@ public class ProductServiceImpl implements ProductService {
         product.setPublishedDate(productDTO.getPublishedDate());
         product.setStock(productDTO.getStock());
         product.setAvailable(productDTO.isAvailable());
+
+        product.getOrderItems().forEach(oI -> oI.setProduct(null));
+        product.getOrderItems().clear();
+
+        if(productDTO.getOrderItem() != null) {
+            productDTO.getOrderItem().forEach(oI ->
+                    product.addOrderItem(OrderItemMapper.mapOrderItemDTOtoOrderItem(oI)));
+        }
+
         productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(product);
     }
@@ -45,9 +54,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Producto no encontrado con id: " + id));
 
-
         productRepository.delete(product);
-
 
         return "Product con ID " + id + " eliminado exitosamente.";
     }

@@ -2,13 +2,16 @@ package com.troyecto.marketplace.serviceimpls;
 
 
 import com.troyecto.marketplace.dtos.OrderItemDTO;
+import com.troyecto.marketplace.entities.Order;
 import com.troyecto.marketplace.entities.OrderItem;
+import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderItemMapper;
 import com.troyecto.marketplace.repositories.OrderItemRepository;
+import com.troyecto.marketplace.repositories.OrderRepository;
+import com.troyecto.marketplace.repositories.ProductRepository;
 import com.troyecto.marketplace.services.OrderItemService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +21,23 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class OrderItemServiceImpl implements OrderItemService {
 
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+
+    private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = new OrderItem();
+
+        Order order = orderRepository.findById(orderItemDTO.getOrderId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order"));
+        orderItem.setOrder(order);
+
+        Product product = productRepository.findById(orderItemDTO.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product"));
+        orderItem.setProduct(product);
+
         return OrderItemMapper.mapOrderItemToOrderItemDTO(orderItemRepository.save(orderItem));
     }
 
@@ -66,6 +80,14 @@ public class OrderItemServiceImpl implements OrderItemService {
         orderItem.setPrice(orderItemDTO.getPrice());
         orderItem.setQuantity(orderItemDTO.getQuantity());
         orderItem.setSubtotal(orderItemDTO.getSubtotal());
+
+        Order order = orderRepository.findById(orderItemDTO.getOrderId())
+                .orElseThrow(()-> new ResourceNotFoundException("Order"));
+        orderItem.setOrder(order);
+
+        Product product = productRepository.findById(orderItemDTO.getProductId())
+                .orElseThrow(()-> new ResourceNotFoundException("Product"));
+        orderItem.setProduct(product);
 
         OrderItem updateOrderItem = orderItemRepository.save(orderItem);
 

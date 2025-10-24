@@ -40,7 +40,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
 
-    private List<Order> orders;
+    private List<Order> orders = new ArrayList<>();
 
     public void addOrder(Order order) {
         orders.add(order);
@@ -50,8 +50,19 @@ public class User {
         orders.remove(order);
         order.setUser(null);
     }
+
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
     private List<Product> products = new ArrayList<>();
+
+    public void addProduct(Product product) {
+        products.add(product);
+        product.setUser(this);
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+        product.setUser(null);
+    }
 
 }

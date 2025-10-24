@@ -1,19 +1,34 @@
 package com.troyecto.marketplace.mappers;
 
+import com.troyecto.marketplace.dtos.OrderItemDTO;
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.entities.Product;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class ProductMapper {
     public static ProductDTO mapProductToProductDTO(Product product) {
-        return new ProductDTO(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStock(),
-                product.getPublishedDate(),
-                product.isAvailable()
-        );
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setStock(product.getStock());
+        productDTO.setPublishedDate(product.getPublishedDate());
+        productDTO.setAvailable(product.isAvailable());
+
+        List<OrderItemDTO> orderItemDTO = null;
+        if (product.getOrderItems() != null) {
+            orderItemDTO = product.getOrderItems()
+                    .stream()
+                    .map(OrderItemMapper::mapOrderItemToOrderItemDTO)
+                    .collect(Collectors.toList());
+        }
+
+        productDTO.setOrderItem(orderItemDTO);
+        return null;
     }
     public static Product mapProductDTOtoProduct(ProductDTO productDTO) {
         Product product = new Product();
@@ -24,6 +39,14 @@ public class ProductMapper {
         product.setDescription(productDTO.getDescription());
         product.setAvailable(productDTO.isAvailable());
         product.setPublishedDate(productDTO.getPublishedDate());
+
+        if (productDTO.getOrderItem() != null) {
+            productDTO.getOrderItem().stream()
+                    .filter(Objects::nonNull)
+                    .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)
+                    .forEach(product::addOrderItem);
+        }
+
         return product;
     }
 }

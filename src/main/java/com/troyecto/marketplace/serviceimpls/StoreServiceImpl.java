@@ -7,16 +7,15 @@ import com.troyecto.marketplace.mappers.StoreMapper;
 import com.troyecto.marketplace.repositories.StoreRepository;
 import com.troyecto.marketplace.services.StoreService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
-    @Autowired
     private final StoreRepository storeRepository;
 
     @Override
@@ -45,5 +44,20 @@ public class StoreServiceImpl implements StoreService {
 
         Store updatedStore = storeRepository.save(store);
         return StoreMapper.toDTO(updatedStore);
+    }
+
+    @Override
+    public void DeleteStore(Long id) {
+        Store store = storeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Tienda no encontrado con id: " + id));
+        storeRepository.delete(store);
+    }
+
+    @Override
+    public List<StoreDTO> getStores() {
+        List<Store> stores = storeRepository.findAll();
+        return stores.stream()
+                .map(StoreMapper::toDTO)
+                .toList();
     }
 }

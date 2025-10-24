@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,8 +26,6 @@ public class Order {
     //private String buyer;   //Cambiar despues a ManytoOne con user
     //@Column(nullable = false)
     //private String seller;  //Cambiar despues a ManytoOne con user
-    @Column(nullable = false)
-    private Long items;     //Cambiar despues a List<orderItems>
     @Column(nullable = false)
     private BigDecimal subtotal;
     @Column(nullable = false)
@@ -47,4 +47,18 @@ public class Order {
                 foreignKey = @ForeignKey(name = "fk_order_user"))
     @JsonBackReference
     private User user;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<OrderItem> orderItems = new ArrayList<>();
+
+    public void addOrderItem(OrderItem orderItem){
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItem orderItem){
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
 }

@@ -1,7 +1,6 @@
 package com.troyecto.marketplace.services;
 
 import com.troyecto.marketplace.dtos.OrderItemDTO;
-import com.troyecto.marketplace.entities.OrderItem;
 
 import java.util.List;
 
