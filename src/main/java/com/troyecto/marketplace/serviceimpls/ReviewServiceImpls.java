@@ -2,11 +2,8 @@ package com.troyecto.marketplace.serviceimpls;
 
 import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.entities.Review;
-import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.ReviewMapper;
-import com.troyecto.marketplace.mappers.UserMapper;
-import com.troyecto.marketplace.repositories.OrderRepository;
 import com.troyecto.marketplace.repositories.ReviewRepository;
 import com.troyecto.marketplace.services.ReviewService;
 import lombok.AllArgsConstructor;
@@ -29,14 +26,14 @@ public class ReviewServiceImpls implements ReviewService {
     }
 
     @Override
-    public ReviewDTO updateReview(Long id,ReviewDTO reviewdetails) {
+    public ReviewDTO updateReview(Long id,ReviewDTO reviewDTO) {
         Review review=reviewRepository.findById(id).
                 orElseThrow(()->new ResourceNotFoundException("No se puede actualizar. Review no encontrada con id: " + id));
-        review.setId(reviewdetails.getId());
-        review.setComment(reviewdetails.getComment());
-        review.setRating(reviewdetails.getRating());
-        review.setUpdatedAt(reviewdetails.getUpdatedAt());
-        review.setCreatedAt(reviewdetails.getCreatedAt());
+        review.setId(reviewDTO.getId());
+        review.setComment(reviewDTO.getComment());
+        review.setRating(reviewDTO.getRating());
+        review.setUpdatedAt(reviewDTO.getUpdatedAt());
+        review.setCreatedAt(reviewDTO.getCreatedAt());
         Review savedReview= reviewRepository.save(review);
         return ReviewMapper.mapReviewtoReviewDTO(savedReview);
     }

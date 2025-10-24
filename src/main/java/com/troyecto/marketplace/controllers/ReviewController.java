@@ -1,7 +1,6 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.dtos.ReviewDTO;
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.services.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

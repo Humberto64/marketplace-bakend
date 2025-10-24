@@ -1,54 +1,44 @@
 package com.troyecto.marketplace.controllers;
 
-// Importaciones de tus clases de proyecto (deben coincidir con tus carpetas/paquetes)
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.entities.Product;
-import com.troyecto.marketplace.mappers.ProductMapper;
 import com.troyecto.marketplace.services.ProductService;
-
-// Importaciones estándar de Spring y HTTP
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/products") // Endpoint base: /api/products
+import java.util.List;
+
+@RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
+@RequestMapping("/api/products") // Define la URL base para todos los endpoints en esta clase.
+@CrossOrigin("*")
+@AllArgsConstructor // Para inyectar el servicio
 public class ProductController {
-
-    private final ProductService productService;
-    private final ProductMapper productMapper;
-
-    @Autowired
-    public ProductController(ProductService productService, ProductMapper productMapper) {
-        this.productService = productService;
-        this.productMapper = productMapper;
-    }
-
-    /**
-     * Endpoint para publicar un nuevo producto en una tienda.
-     * Método: POST /api/products
-     */
+    private ProductService productService;
     @PostMapping
-    public ResponseEntity<ProductDTO> publishProduct(@RequestBody ProductDTO productDTO) {
-        try {
-            // 1. Controller usa el Mapper para convertir DTO a Entity
-            Product productEntity = productMapper.toEntity(productDTO);
-
-            // 2. Llama al servicio para la lógica de negocio (validación, asignación de fecha)
-            Product newProduct = productService.publishNewProduct(productEntity);
-
-            // 3. Mapper convierte la Entity final de vuelta a DTO para la respuesta
-            ProductDTO responseDTO = productMapper.toDTO(newProduct);
-
-            // Respuesta de éxito
-            return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-
-        } catch (IllegalArgumentException e) {
-            // Manejo de errores de negocio (ej. producto con nombre duplicado en la misma tienda)
-            System.err.println("Error al publicar producto: " + e.getMessage());
-            // Uso de ResponseEntity para devolver el mensaje de error y el código 409
-            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO){
+        ProductDTO savedProduct= productService.createProduct(productDTO);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAllProducts(){
+        List<ProductDTO> products= productService.getAllProducts();
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductsById(@PathVariable Long id){
+        ProductDTO productDTO=productService.getProductById(id);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO){
+        ProductDTO savedProduct=productService.updateProduct(id, productDTO);
+        return new ResponseEntity<>(savedProduct, HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id){
+        String message=productService.cancelProduct(id);
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
 }

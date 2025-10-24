@@ -1,5 +1,6 @@
 package com.troyecto.marketplace.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,31 +19,23 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // Nombre del producto (debe ser único dentro de la tienda, pero no a nivel global, por ahora)
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
-
+    @Column(nullable = false)
     private String description;
-
-    // Precio del producto. Usamos BigDecimal por precisión monetaria. ¡CRÍTICO!
     @Column(nullable = false)
     private BigDecimal price;
-
-    // Stock disponible (entero, ya que no puedes vender 0.5 unidades)
-    private Integer stock;
-
-    // El ID de la tienda, que se usará para la relación ManyToOne después
-    private Long storeId;
-
-    // Fecha en la que se publica o actualiza el producto
     @Column(nullable = false)
+    private Integer stock;
+    //@Column(nullable = false)
     private LocalDateTime publishedDate;
-
-    // Estado de disponibilidad (puede ser 'true' si hay stock > 0)
     private boolean isAvailable;
 
-    // **********************************************
-    // NOTA: Los campos de relación (@ManyToOne Store, @OneToMany OrderItem) se añadirán después.
-    // **********************************************
+    @ManyToOne(fetch = FetchType.EAGER,optional = false)
+    @JoinColumn(name = "product_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_product_user"))
+    @JsonBackReference
+    private User user;
+
 }

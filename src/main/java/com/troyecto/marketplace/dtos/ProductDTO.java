@@ -1,7 +1,9 @@
 package com.troyecto.marketplace.dtos;
 
-import lombok.Data;
+import lombok.*;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 // 🔑 IMPORTACIONES NECESARIAS PARA QUE FUNCIONE:
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -9,21 +11,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class ProductDTO {
 
-    @NotBlank(message = "El nombre del producto es obligatorio.")
+    private Long id;
     private String name;
-
     private String description;
-
-    @NotNull(message = "El precio es obligatorio.")
-    @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0.")
     private BigDecimal price;
-
-    @NotNull(message = "El stock es obligatorio.")
-    @Min(value = 0, message = "El stock no puede ser negativo.")
     private Integer stock;
-
-    @NotNull(message = "El ID de la tienda es obligatorio.")
-    private Long storeId;
+    private LocalDateTime publishedDate;
+    private boolean isAvailable;
 }
