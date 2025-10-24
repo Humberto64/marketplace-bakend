@@ -1,8 +1,6 @@
 
 package com.troyecto.marketplace.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,11 +32,19 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private String role;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Review> reviews=  new ArrayList<>();
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonBackReference
-    private List<Product> products = new ArrayList<>();
+    private List<Order> orders;
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setUser(this);
+    }
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setUser(null);
+    }
    }
