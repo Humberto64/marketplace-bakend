@@ -1,6 +1,7 @@
 package com.troyecto.marketplace.mappers;
 
 import com.troyecto.marketplace.dtos.OrderDTO;
+import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.entities.User;
 
@@ -13,7 +14,13 @@ public class UserMapper {
 
     public static UserDTO toDTO(User user) {
         if  (user == null) return null;
-
+        List<ReviewDTO> reviewDTOs = null;
+        if(user.getReviews() != null) {
+            reviewDTOs= user.getReviews()
+                    .stream()
+                    .map(ReviewMapper::mapReviewtoReviewDTO)
+                    .collect(Collectors.toList());
+        }
         List<OrderDTO> orderDTOs = null;
         if(user.getOrders() != null) {
             orderDTOs = user.getOrders()
@@ -23,7 +30,6 @@ public class UserMapper {
         }
 
         UserDTO dto = new UserDTO();
-
         dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
@@ -33,6 +39,7 @@ public class UserMapper {
         dto.setAddress(user.getAddress());
         dto.setRole(user.getRole());
         dto.setOrders(orderDTOs);
+        dto.setReviews(reviewDTOs);
         return dto;
     }
 
@@ -50,7 +57,12 @@ public class UserMapper {
         user.setPassword(dto.getPassword());
         user.setAddress(dto.getAddress());
         user.setRole(dto.getRole());
-
+        if(dto.getReviews() != null) {
+            dto.getReviews().stream()
+                    .filter(Objects::nonNull)
+                    .map(ReviewMapper::mapReviewDTOtoReview)
+                    .forEach(user::addReview);
+        }
         if(dto.getOrders() != null){
             dto.getOrders().stream()
                     .filter(Objects::nonNull)

@@ -4,6 +4,7 @@ import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderMapper;
+import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.mappers.UserMapper;
 import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.UserService;
@@ -56,10 +57,15 @@ public class UserServiceImpl implements UserService {
 
         user.getOrders().forEach(d -> d.setUser(null));
         user.getOrders().clear();
-
+        user.getReviews().forEach(d -> d.setUser(null));
+        user.getReviews().clear();
         if (userDetails.getOrders() != null) {
             userDetails.getOrders().forEach(orderDto ->
                     user.addOrder(OrderMapper.mapOrderDTOtoOrder(orderDto)));
+        }
+        if(userDetails.getReviews() != null) {
+            userDetails.getReviews().forEach(reviewDto ->
+                    user.addReview(ReviewMapper.mapReviewDTOtoReview(reviewDto)));
         }
 
         User updatedUser = userRepository.save(user);

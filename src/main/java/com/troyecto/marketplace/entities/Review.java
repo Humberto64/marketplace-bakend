@@ -27,9 +27,9 @@ public class Review {
     private Date createdAt;
     //@Column(nullable = false)
     private Date updatedAt;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id",
-        nullable = false,
+            nullable = false,
             foreignKey =@ForeignKey(name ="fk_review_user"))
     @JsonBackReference
     private User user;

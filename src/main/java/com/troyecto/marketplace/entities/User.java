@@ -64,5 +64,16 @@ public class User {
         products.remove(product);
         product.setUser(null);
     }
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
+    private List<Review> reviews = new ArrayList<>();
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
+    }
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setUser(null);
+    }
 
 }
