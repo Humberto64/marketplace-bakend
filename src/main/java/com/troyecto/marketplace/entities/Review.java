@@ -34,7 +34,7 @@ public class Review {
             foreignKey =@ForeignKey(name ="fk_review_user"))
     @JsonBackReference
     private User user;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY,optional=false)
     @JoinColumn(name = "product_id",
             nullable = false,
             foreignKey =@ForeignKey(name ="fk_review_product"))

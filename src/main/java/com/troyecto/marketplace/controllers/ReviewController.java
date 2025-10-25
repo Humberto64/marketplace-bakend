@@ -23,7 +23,7 @@ public class ReviewController {
     @GetMapping
     public ResponseEntity<List<ReviewDTO>> getAllReviews() {
         List<ReviewDTO> reviews = reviewService.getAllReviews();
-        return new ResponseEntity<>(reviews, HttpStatus.OK);
+        return ResponseEntity.ok(reviews);
     }
     @GetMapping("/{id}")
     public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long id) {
@@ -31,13 +31,13 @@ public class ReviewController {
         return new ResponseEntity<>(review, HttpStatus.OK); // Devuelve el usuario y un código 200.
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewdetails) {
-        ReviewDTO updatedReview = reviewService.updateReview(id, reviewdetails);
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
+        ReviewDTO updatedReview = reviewService.updateReview(id, reviewDTO);
         return new ResponseEntity<>(updatedReview, HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(@PathVariable Long id) {
-        String message = reviewService.deleteReview(id);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        reviewService.deleteReview(id);
+        return ResponseEntity.ok("Review deleted successfully.");
     }
 }

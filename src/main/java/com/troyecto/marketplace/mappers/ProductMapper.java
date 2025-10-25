@@ -4,6 +4,7 @@ import com.troyecto.marketplace.dtos.OrderItemDTO;
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.entities.Product;
+import com.troyecto.marketplace.entities.User;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class ProductMapper {
                     .collect(Collectors.toList());
         }
         productDTO.setReviews(reviewDTO);
-        return null;
+        return productDTO;
     }
     public static Product mapProductDTOtoProduct(ProductDTO productDTO) {
         Product product = new Product();

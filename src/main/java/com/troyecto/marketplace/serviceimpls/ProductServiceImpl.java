@@ -8,20 +8,27 @@ import com.troyecto.marketplace.mappers.OrderItemMapper;
 import com.troyecto.marketplace.mappers.ProductMapper;
 import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.repositories.ProductRepository;
+import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class ProductServiceImpl implements ProductService {
-
+    @Autowired
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
+        productDTO.setPublishedDate(LocalDateTime.now());
         Product product = ProductMapper.mapProductDTOtoProduct(productDTO);
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(savedProduct);

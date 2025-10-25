@@ -17,4 +17,8 @@ public class ReviewDTO {
     private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long productId;
+    private String productName;
+    private Long userId;
+    private String userName;
 }
