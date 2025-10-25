@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,8 @@ public class ReviewServiceImpls implements ReviewService {
     private ReviewRepository reviewRepository;
     @Override
     public ReviewDTO createReview(ReviewDTO reviewDTO) {
+        reviewDTO.setCreatedAt(LocalDateTime.now());
+        reviewDTO.setUpdatedAt(null);
         Review review= ReviewMapper.mapReviewDTOtoReview(reviewDTO);
         Review savedReview= reviewRepository.save(review);
         return ReviewMapper.mapReviewtoReviewDTO(savedReview);
@@ -27,6 +30,7 @@ public class ReviewServiceImpls implements ReviewService {
 
     @Override
     public ReviewDTO updateReview(Long id,ReviewDTO reviewDTO) {
+        reviewDTO.setUpdatedAt(LocalDateTime.now());
         Review review=reviewRepository.findById(id).
                 orElseThrow(()->new ResourceNotFoundException("No se puede actualizar. Review no encontrada con id: " + id));
         review.setId(reviewDTO.getId());

@@ -21,6 +21,6 @@ public class ProductDTO {
     private Integer stock;
     private LocalDateTime publishedDate;
     private boolean isAvailable;
-
     private List<OrderItemDTO> orderItem;
+    private List<ReviewDTO> reviews;
 }

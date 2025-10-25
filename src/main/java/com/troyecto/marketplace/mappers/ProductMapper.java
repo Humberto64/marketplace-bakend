@@ -2,6 +2,7 @@ package com.troyecto.marketplace.mappers;
 
 import com.troyecto.marketplace.dtos.OrderItemDTO;
 import com.troyecto.marketplace.dtos.ProductDTO;
+import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.entities.Product;
 
 import java.util.List;
@@ -26,8 +27,15 @@ public class ProductMapper {
                     .map(OrderItemMapper::mapOrderItemToOrderItemDTO)
                     .collect(Collectors.toList());
         }
-
         productDTO.setOrderItem(orderItemDTO);
+        List<ReviewDTO> reviewDTO = null;
+        if (product.getReviews() != null) {
+            reviewDTO=product.getReviews()
+                    .stream()
+                    .map(ReviewMapper::mapReviewtoReviewDTO)
+                    .collect(Collectors.toList());
+        }
+        productDTO.setReviews(reviewDTO);
         return null;
     }
     public static Product mapProductDTOtoProduct(ProductDTO productDTO) {
@@ -46,7 +54,12 @@ public class ProductMapper {
                     .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)
                     .forEach(product::addOrderItem);
         }
-
+        if(productDTO.getReviews() != null) {
+            productDTO.getReviews().stream()
+                    .filter(Objects::nonNull)
+                    .map(ReviewMapper::mapReviewDTOtoReview)
+                    .forEach(product::addReview);
+        }
         return product;
     }
 }

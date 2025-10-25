@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.repository.cdi.Eager;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -24,9 +25,9 @@ public class Review {
     @Column(nullable = false)
     private String comment;
     //@Column(nullable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     //@Column(nullable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id",
             nullable = false,

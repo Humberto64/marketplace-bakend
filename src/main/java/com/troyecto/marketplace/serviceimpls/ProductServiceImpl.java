@@ -6,6 +6,7 @@ import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderItemMapper;
 import com.troyecto.marketplace.mappers.ProductMapper;
+import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.repositories.ProductRepository;
 import com.troyecto.marketplace.services.ProductService;
 import lombok.AllArgsConstructor;
@@ -37,15 +38,18 @@ public class ProductServiceImpl implements ProductService {
         product.setPublishedDate(productDTO.getPublishedDate());
         product.setStock(productDTO.getStock());
         product.setAvailable(productDTO.isAvailable());
-
         product.getOrderItems().forEach(oI -> oI.setProduct(null));
         product.getOrderItems().clear();
-
+        product.getReviews().forEach(R -> R.setProduct(null));
+        product.getReviews().clear();
         if(productDTO.getOrderItem() != null) {
             productDTO.getOrderItem().forEach(oI ->
                     product.addOrderItem(OrderItemMapper.mapOrderItemDTOtoOrderItem(oI)));
         }
-
+        if(productDTO.getReviews() != null) {
+            productDTO.getReviews().forEach(R ->
+                    product.addReview(ReviewMapper.mapReviewDTOtoReview(R)));
+        }
         productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(product);
     }

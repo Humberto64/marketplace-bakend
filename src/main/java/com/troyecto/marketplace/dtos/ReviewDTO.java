@@ -3,6 +3,7 @@ package com.troyecto.marketplace.dtos;
 import jakarta.persistence.Column;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,6 +15,6 @@ public class ReviewDTO {
     private Long id;
     private int rating;
     private String comment;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

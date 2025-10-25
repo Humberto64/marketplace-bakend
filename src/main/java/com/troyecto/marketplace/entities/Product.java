@@ -54,5 +54,15 @@ public class Product {
         orderItems.remove(orderItem);
         orderItem.setProduct(null);
     }
-
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
+    private List<Review> reviews = new ArrayList<>();
+    public void  addReview(Review review) {
+        reviews.add(review);
+        review.setProduct(this);
+    }
+    public void  removeReview(Review review) {
+        reviews.remove(review);
+        review.setProduct(null);
+    }
 }
