@@ -18,9 +18,9 @@ public class OrderController {
     private final OrderService orderService;
 
 
-    @PostMapping("/users/{userId}/orders")
-    public ResponseEntity<OrderDTO> createOrder(@PathVariable Long userId, @RequestBody OrderDTO orderDTO) {
-        OrderDTO savedOrder = orderService.createOrder(userId, orderDTO);
+    @PostMapping("/orders")
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
+        OrderDTO savedOrder = orderService.createOrder(orderDTO);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
     }
 
@@ -31,8 +31,8 @@ public class OrderController {
     }
 
     @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity<String> deleteOrder(@RequestParam(required = false) Long userId, @PathVariable Long orderId) {
-        String message = orderService.cancelOrder(userId, orderId);
+    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
+        String message = orderService.cancelOrder(orderId);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
@@ -44,5 +44,11 @@ public class OrderController {
     @GetMapping("/orders")
     public ResponseEntity<List<OrderDTO>> ListAll() {
         return ResponseEntity.ok(orderService.listAll());
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable Long orderId) {
+        OrderDTO order = orderService.getOrderById(orderId);
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }

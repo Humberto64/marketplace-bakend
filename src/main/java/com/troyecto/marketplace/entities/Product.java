@@ -1,6 +1,5 @@
 package com.troyecto.marketplace.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,7 +31,8 @@ public class Product {
     private Integer stock;
     //@Column(nullable = false)
     private LocalDateTime publishedDate;
-    private Boolean isAvailable;
+    private boolean isAvailable;
+
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

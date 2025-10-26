@@ -38,7 +38,6 @@ public class Order {
     private String payMethod;
     @Column(nullable = false)
     private String paymentStatus;
-    @Column(nullable = false)
     private LocalDateTime orderDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -39,7 +39,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-
     private List<Order> orders = new ArrayList<>();
 
     public void addOrder(Order order) {

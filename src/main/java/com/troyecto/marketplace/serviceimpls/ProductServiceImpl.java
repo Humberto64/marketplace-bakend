@@ -12,7 +12,6 @@ import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,13 +22,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Transactional
 public class ProductServiceImpl implements ProductService {
-    @Autowired
+
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
-        productDTO.setPublishedDate(LocalDateTime.now());
         Product product = ProductMapper.mapProductDTOtoProduct(productDTO);
+        product.setPublishedDate(LocalDateTime.now());
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(savedProduct);
     }
@@ -44,7 +43,6 @@ public class ProductServiceImpl implements ProductService {
         product.setId(product.getId());
         product.setPublishedDate(productDTO.getPublishedDate());
         product.setStock(productDTO.getStock());
-        product.setIsAvailable(productDTO.getIsAvailable());
         product.getOrderItems().forEach(oI -> oI.setProduct(null));
         product.getOrderItems().clear();
         product.getReviews().forEach(R -> R.setProduct(null));

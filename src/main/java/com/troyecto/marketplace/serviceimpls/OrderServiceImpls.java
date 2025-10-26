@@ -25,17 +25,17 @@ public class OrderServiceImpls implements OrderService {
     private final UserRepository userRepository;
 
     @Override
-    public OrderDTO createOrder(Long userId, OrderDTO orderDTO) {
-        verifyUser(userId);
-
-        orderDTO.setOrderDate(LocalDateTime.now());
+    public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.mapOrderDTOtoOrder(orderDTO);
+        verifyUser(orderDTO.getUserId());
+
+        order.setOrderDate(LocalDateTime.now());
 
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         order.setUser(user);
-
-        return OrderMapper.mapOrderToOrderDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        return OrderMapper.mapOrderToOrderDTO(savedOrder);
     }
 
     @Override
@@ -63,7 +63,15 @@ public class OrderServiceImpls implements OrderService {
     }
 
     @Override
-    public String cancelOrder(Long userId, Long orderId) {
+    public OrderDTO getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order no encontrada con id:" + orderId));
+
+        return  OrderMapper.mapOrderToOrderDTO(order);
+    }
+
+    @Override
+    public String cancelOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Orden no encontrada con id: " + orderId));
 
