@@ -20,7 +20,7 @@ public class ProductDTO {
     private BigDecimal price;
     private Integer stock;
     private LocalDateTime publishedDate;
-    private boolean isAvailable;
+    private Boolean isAvailable;
     private List<OrderItemDTO> orderItem;
     private List<ReviewDTO> reviews;
 }

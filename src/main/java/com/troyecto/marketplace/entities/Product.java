@@ -32,14 +32,7 @@ public class Product {
     private Integer stock;
     //@Column(nullable = false)
     private LocalDateTime publishedDate;
-    private boolean isAvailable;
-
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    @JoinColumn(name = "user_id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "fk_product_user"))
-    @JsonBackReference
-    private User user;
+    private Boolean isAvailable;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

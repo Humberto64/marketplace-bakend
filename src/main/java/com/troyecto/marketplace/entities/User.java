@@ -53,19 +53,6 @@ public class User {
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
-    private List<Product> products = new ArrayList<>();
-
-    public void addProduct(Product product) {
-        products.add(product);
-        product.setUser(this);
-    }
-
-    public void removeProduct(Product product) {
-        products.remove(product);
-        product.setUser(null);
-    }
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonBackReference
     private List<Review> reviews = new ArrayList<>();
     public void addReview(Review review) {
         reviews.add(review);

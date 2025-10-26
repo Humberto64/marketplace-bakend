@@ -19,7 +19,7 @@ public class ProductMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setPublishedDate(product.getPublishedDate());
-        productDTO.setAvailable(product.isAvailable());
+        productDTO.setIsAvailable(product.getIsAvailable());
 
         List<OrderItemDTO> orderItemDTO = null;
         if (product.getOrderItems() != null) {
@@ -46,7 +46,8 @@ public class ProductMapper {
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
         product.setDescription(productDTO.getDescription());
-        product.setAvailable(productDTO.isAvailable());
+        product.setIsAvailable(productDTO.getIsAvailable() != null ? productDTO.getIsAvailable() : true);
+
         product.setPublishedDate(productDTO.getPublishedDate());
 
         if (productDTO.getOrderItem() != null) {
