@@ -8,7 +8,9 @@ import com.troyecto.marketplace.mappers.StoreMapper;
 import com.troyecto.marketplace.repositories.StoreRepository;
 import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.StoreService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,8 +18,9 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class StoreServiceImpl implements StoreService {
-
+    @Autowired
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     @Override

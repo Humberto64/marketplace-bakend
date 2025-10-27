@@ -20,7 +20,6 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     // Nombre de la tienda (debe ser único para evitar duplicados)
     @Column(nullable = false, unique = true)
     private String name;
@@ -32,7 +31,7 @@ public class Store {
     @Column(nullable = false)
     private LocalDateTime createdDate;
     // Campo para saber si la tienda está activa o suspendida
-    private boolean isActive;
+    private Boolean isActive;
     @ManyToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name = "user_id",
             nullable = false,

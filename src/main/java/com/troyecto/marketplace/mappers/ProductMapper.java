@@ -19,7 +19,7 @@ public class ProductMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setPublishedDate(product.getPublishedDate());
-        //productDTO.setIsAvailable(product.getIsAvailable());
+        productDTO.setIsAvailable(product.getIsAvailable());
         Store store=product.getStore();
         if(store!=null){
             productDTO.setStoreId(store.getId());

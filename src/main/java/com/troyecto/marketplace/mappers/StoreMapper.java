@@ -25,7 +25,7 @@ public class StoreMapper {
         entity.setDescription(dto.getDescription());
         entity.setCategory(dto.getCategory());;
         entity.setCreatedDate(dto.getCreatedDate());
-        entity.setActive(dto.getIsActive());
+        entity.setIsActive(dto.getIsActive());
         if(dto.getProducts() != null) {
             dto.getProducts().stream()
                     .filter(Objects::nonNull)
@@ -46,6 +46,8 @@ public class StoreMapper {
         dto.setDescription(entity.getDescription());
         dto.setCategory(entity.getCategory());
         dto.setId(entity.getId());
+        dto.setCreatedDate(entity.getCreatedDate());
+        dto.setIsActive(entity.getIsActive());
         User user=entity.getUser();
         if(user!=null){
             dto.setUserId(user.getId());

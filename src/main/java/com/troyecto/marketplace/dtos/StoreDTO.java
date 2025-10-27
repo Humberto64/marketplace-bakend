@@ -19,7 +19,6 @@ public class StoreDTO {
     private String description;
     @NotBlank(message = "La categoría es obligatoria.")
     private String category;
-    @NotNull(message = "El ID del dueño (vendedor) es obligatorio.")
     private LocalDateTime createdDate;
     private Boolean isActive;
     private Long userId;

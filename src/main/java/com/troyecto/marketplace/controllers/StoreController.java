@@ -52,4 +52,10 @@ public class StoreController {
         StoreDTO store = storeService.getStoreById(id);
         return new ResponseEntity<>(store, HttpStatus.OK); // Devuelve el usuario y un código 200.
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity
+                .badRequest()  // HTTP 400
+                .body(ex.getMessage()); // Devuelve el mensaje exacto del error
+    }
 }
