@@ -21,4 +21,5 @@ public class UserDTO {
     private String role;
     private List<OrderDTO> orders;
     private List<ReviewDTO> reviews;
+    private List<StoreDTO> stores;
    }

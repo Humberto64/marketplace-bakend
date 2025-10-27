@@ -21,6 +21,9 @@ public class ProductDTO {
     private Integer stock;
     private LocalDateTime publishedDate;
     private Boolean isAvailable;
+    private Long storeId;
+    private String storeName;
     private List<OrderItemDTO> orderItem;
     private List<ReviewDTO> reviews;
+
 }

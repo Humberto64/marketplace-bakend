@@ -61,5 +61,15 @@ public class User {
         reviews.remove(review);
         review.setUser(null);
     }
-
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
+    private List<Store> stores = new ArrayList<>();
+    public void addStore(Store store) {
+        stores.add(store);
+        store.setUser(this);
+    }
+    public void removeStore(Store store) {
+        stores.remove(store);
+        store.setUser(null);
+    }
 }

@@ -2,6 +2,7 @@ package com.troyecto.marketplace.mappers;
 
 import com.troyecto.marketplace.dtos.OrderDTO;
 import com.troyecto.marketplace.dtos.ReviewDTO;
+import com.troyecto.marketplace.dtos.StoreDTO;
 import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.entities.User;
 
@@ -28,7 +29,14 @@ public class UserMapper {
                     .map(OrderMapper::mapOrderToOrderDTO)
                     .collect(Collectors.toList());
         }
+        List<StoreDTO> storeDTOs = null;
+        if(user.getStores() != null) {
+            storeDTOs=user.getStores()
+                    .stream()
+                    .map(StoreMapper::toDTO)
+                    .collect(Collectors.toList());
 
+        }
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setFirstName(user.getFirstName());
@@ -69,7 +77,12 @@ public class UserMapper {
                     .map(OrderMapper::mapOrderDTOtoOrder)
                     .forEach(user::addOrder);
         }
-
+        if (dto.getStores() != null) {
+            dto.getStores().stream()
+                    .filter(Objects::nonNull)
+                    .map(StoreMapper::toEntity)
+                    .forEach(user::addStore);
+        }
         return user;
     }
 }

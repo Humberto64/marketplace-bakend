@@ -3,11 +3,13 @@ package com.troyecto.marketplace.serviceimpls;
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.entities.Product;
 
+import com.troyecto.marketplace.entities.Store;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderItemMapper;
 import com.troyecto.marketplace.mappers.ProductMapper;
 import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.repositories.ProductRepository;
+import com.troyecto.marketplace.repositories.StoreRepository;
 import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.ProductService;
 import jakarta.transaction.Transactional;
@@ -24,11 +26,15 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = ProductMapper.mapProductDTOtoProduct(productDTO);
         product.setPublishedDate(LocalDateTime.now());
+        //Set store
+        Store store=storeRepository.findById(productDTO.getStoreId()).
+                orElseThrow(() -> new ResourceNotFoundException("Store not found"));
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(savedProduct);
     }

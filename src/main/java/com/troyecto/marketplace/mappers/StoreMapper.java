@@ -1,8 +1,16 @@
 package com.troyecto.marketplace.mappers;
 
+import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.StoreDTO;
+import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.entities.Store;
+import com.troyecto.marketplace.entities.User;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component // Para que Spring pueda inyectarlo
 public class StoreMapper {
@@ -15,12 +23,16 @@ public class StoreMapper {
 
         entity.setName(dto.getName());
         entity.setDescription(dto.getDescription());
-        entity.setCategory(dto.getCategory());
-        entity.setOwnerId(dto.getOwnerId());
+        entity.setCategory(dto.getCategory());;
         entity.setCreatedDate(dto.getCreatedDate());
-        entity.setActive(dto.isActive());
+        entity.setActive(dto.getIsActive());
+        if(dto.getProducts() != null) {
+            dto.getProducts().stream()
+                    .filter(Objects::nonNull)
+                    .map(ProductMapper::mapProductDTOtoProduct)
+                    .forEach(entity::addProduct);
+        }
 
-        // NOTA: Los campos creados por el backend (createdDate, isActive) NO se mapean aquí.
         return entity;
     }
 
@@ -33,8 +45,20 @@ public class StoreMapper {
         dto.setName(entity.getName());
         dto.setDescription(entity.getDescription());
         dto.setCategory(entity.getCategory());
-        dto.setOwnerId(entity.getOwnerId());
-
+        dto.setId(entity.getId());
+        User user=entity.getUser();
+        if(user!=null){
+            dto.setUserId(user.getId());
+            dto.setUserName(user.getFirstName()+" "+user.getLastName());
+        }
+        List<ProductDTO> productDTO=null;
+        if(entity.getProducts() != null) {
+            productDTO=entity.getProducts()
+                    .stream()
+                    .map(ProductMapper::mapProductToProductDTO)
+                    .collect(Collectors.toList());
+        }
+        dto.setProducts(productDTO);
         return dto;
     }
 }

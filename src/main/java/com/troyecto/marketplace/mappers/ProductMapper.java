@@ -4,6 +4,7 @@ import com.troyecto.marketplace.dtos.OrderItemDTO;
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.entities.Product;
+import com.troyecto.marketplace.entities.Store;
 import com.troyecto.marketplace.entities.User;
 
 import java.util.List;
@@ -20,7 +21,11 @@ public class ProductMapper {
         productDTO.setStock(product.getStock());
         productDTO.setPublishedDate(product.getPublishedDate());
         productDTO.setIsAvailable(product.getIsAvailable());
-
+        Store store=product.getStore();
+        if(store!=null){
+            productDTO.setStoreId(store.getId());
+            productDTO.setStoreName(store.getName());
+        }
         List<OrderItemDTO> orderItemDTO = null;
         if (product.getOrderItems() != null) {
             orderItemDTO = product.getOrderItems()

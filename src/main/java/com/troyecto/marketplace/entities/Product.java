@@ -1,5 +1,6 @@
 package com.troyecto.marketplace.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,9 +32,13 @@ public class Product {
     private Integer stock;
     //@Column(nullable = false)
     private LocalDateTime publishedDate;
-    private boolean isAvailable;
-
-
+    private Boolean isAvailable;
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name="store_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name="fk_product_store"))
+    @JsonBackReference
+    private Store store;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();

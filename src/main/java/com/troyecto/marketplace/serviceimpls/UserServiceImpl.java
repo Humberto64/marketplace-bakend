@@ -67,6 +67,10 @@ public class UserServiceImpl implements UserService {
             userDetails.getReviews().forEach(reviewDto ->
                     user.addReview(ReviewMapper.mapReviewDTOtoReview(reviewDto)));
         }
+        if(userDetails.getOrders() != null) {
+            userDetails.getOrders().forEach(orderDto ->
+                    user.addOrder(OrderMapper.mapOrderDTOtoOrder(orderDto)));
+        }
 
         User updatedUser = userRepository.save(user);
         return UserMapper.toDTO(updatedUser);
