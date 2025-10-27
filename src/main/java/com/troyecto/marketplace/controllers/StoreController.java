@@ -1,6 +1,7 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.dtos.StoreDTO;
+import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.services.StoreService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/stores")
+@CrossOrigin("*")
 @AllArgsConstructor
 public class StoreController {
 
@@ -44,5 +46,10 @@ public class StoreController {
     public ResponseEntity<StoreDTO> deleteStore(@PathVariable Long id) {
         storeService.DeleteStore(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<StoreDTO> getStoreById(@PathVariable Long id) {
+        StoreDTO store = storeService.getStoreById(id);
+        return new ResponseEntity<>(store, HttpStatus.OK); // Devuelve el usuario y un código 200.
     }
 }

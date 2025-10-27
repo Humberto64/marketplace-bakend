@@ -35,6 +35,7 @@ public class ProductServiceImpl implements ProductService {
         //Set store
         Store store=storeRepository.findById(productDTO.getStoreId()).
                 orElseThrow(() -> new ResourceNotFoundException("Store not found"));
+        product.setStore(store);
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(savedProduct);
     }
