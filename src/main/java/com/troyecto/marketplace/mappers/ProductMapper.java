@@ -5,7 +5,6 @@ import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.entities.Store;
-import com.troyecto.marketplace.entities.User;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +19,7 @@ public class ProductMapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setStock(product.getStock());
         productDTO.setPublishedDate(product.getPublishedDate());
-        productDTO.setIsAvailable(product.getIsAvailable());
+        //productDTO.setIsAvailable(product.getIsAvailable());
         Store store=product.getStore();
         if(store!=null){
             productDTO.setStoreId(store.getId());
@@ -51,7 +50,7 @@ public class ProductMapper {
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
         product.setDescription(productDTO.getDescription());
-        product.setIsAvailable(productDTO.getIsAvailable() != null ? productDTO.getIsAvailable() : true);
+        //product.setIsAvailable(productDTO.getIsAvailable() != null ? productDTO.getIsAvailable() : true);
 
         product.setPublishedDate(productDTO.getPublishedDate());
 

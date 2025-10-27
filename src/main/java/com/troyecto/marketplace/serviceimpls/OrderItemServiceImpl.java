@@ -28,8 +28,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        OrderItem orderItem = new OrderItem();
+        OrderItem orderItem = OrderItemMapper.mapOrderItemDTOtoOrderItem(orderItemDTO);
 
+        //orderItem.setSubtotal(orderItem.getQuantity() * orderItemDTO.getPrice());
         Order order = orderRepository.findById(orderItemDTO.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order"));
         orderItem.setOrder(order);
@@ -73,7 +74,6 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItemDTO updateOrderItem(Long id, OrderItemDTO orderItemDTO) {
-
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("No se pudo actualizar. Item de la orden no encontrado con id: " + id));
 

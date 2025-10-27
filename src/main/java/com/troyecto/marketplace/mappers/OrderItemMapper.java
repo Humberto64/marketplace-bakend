@@ -11,6 +11,7 @@ public class OrderItemMapper {
         dto.setId(orderItem.getId());
         dto.setQuantity(orderItem.getQuantity());
         dto.setPrice(orderItem.getPrice());
+        dto.setSubtotal(orderItem.getSubtotal());
 
         Order order = orderItem.getOrder();
         if (order != null){
@@ -31,6 +32,7 @@ public class OrderItemMapper {
         orderItem.setId(orderItemdto.getId());
         orderItem.setQuantity(orderItemdto.getQuantity());
         orderItem.setPrice(orderItemdto.getPrice());
+        orderItem.setSubtotal(orderItemdto.getSubtotal());
 
         return orderItem;
     }
