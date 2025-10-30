@@ -1,4 +1,3 @@
-
 package com.troyecto.marketplace.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -26,6 +25,8 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    // Nota: usar Long para phone puede estar bien, pero en muchos casos es mejor String
+    // para preservar ceros a la izquierda y símbolos internacionales.
     @Column(nullable = false, unique = true)
     private Long phone;
     @Column(nullable = false)
@@ -36,7 +37,13 @@ public class User {
     private String password;
     @Column(nullable = false)
     private String role;
-
+    //cascade propaga las operaciones de persistencia de una entidad A a una B
+    //Si borramos la entidad A se borraría la entidad B por ejemplo
+    // Relación OneToMany con Order:
+    // - mappedBy indica que la entidad Order tiene la FK (relación bidireccional).
+    // - cascade = ALL: operaciones (persist, remove, etc.) se propagan a los orders.
+    // - orphanRemoval = true: si quitamos un Order de la lista y se persiste, JPA lo eliminará de la BD.
+    // - Inicializamos la lista para evitar NullPointerException al añadir elementos.
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Order> orders = new ArrayList<>();
@@ -50,6 +57,9 @@ public class User {
         order.setUser(null);
     }
 
+    // Relación OneToMany con Review:
+    // - @JsonBackReference evita serialización recursiva; la otra parte (Review) debería usar @JsonManagedReference.
+    // - Atención: OneToMany por defecto es LAZY; acceder a reviews fuera de una transacción puede lanzar LazyInitializationException.
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
     private List<Review> reviews = new ArrayList<>();
@@ -61,6 +71,9 @@ public class User {
         reviews.remove(review);
         review.setUser(null);
     }
+
+    // Relación OneToMany con Store:
+    // - misma lógica que las anteriores: mantener consistencia bidireccional usando add/remove.
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
     private List<Store> stores = new ArrayList<>();

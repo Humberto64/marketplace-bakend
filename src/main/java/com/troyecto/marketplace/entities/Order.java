@@ -50,14 +50,15 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<OrderItem> orderItems = new ArrayList<>();
-
+    // Es importante mantener la consistencia de la relación bidireccional
     public void addOrderItem(OrderItem orderItem){
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
 
+    // - Mantener ambas referencias (lista y order en el OrderItem) evita inconsistencias y hace que JPA detecte correctamente cambios.
     public void removeOrderItem(OrderItem orderItem){
         orderItems.remove(orderItem);
         orderItem.setOrder(null);
     }
-}
+   }

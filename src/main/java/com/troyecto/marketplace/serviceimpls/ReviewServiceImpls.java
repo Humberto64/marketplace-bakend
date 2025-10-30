@@ -34,14 +34,18 @@ public class ReviewServiceImpls implements ReviewService {
     public ReviewDTO createReview(ReviewDTO reviewDTO) {
         reviewDTO.setCreatedAt(LocalDateTime.now());
         Review review= ReviewMapper.mapReviewDTOtoReview(reviewDTO);
-        //Set product
+        // Set product
+        // - Aquí se recupera la entidad Product desde su id y se asocia al review
+        //   no del mapper
         Product product =productRepository.findById(reviewDTO.getProductId()).
                 orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         review.setProduct(product);
-        //Set user
+
+        // Set user
         User user=userRepository.findById(reviewDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         review.setUser(user);
+
         Review savedReview=reviewRepository.save(review);
         return ReviewMapper.mapReviewtoReviewDTO(savedReview);
     }
@@ -50,9 +54,11 @@ public class ReviewServiceImpls implements ReviewService {
     public ReviewDTO updateReview(Long id,ReviewDTO reviewDTO) {
         Review review=reviewRepository.findById(id).
                 orElseThrow(()->new ResourceNotFoundException("No se puede actualizar. Review no encontrada con id: " + id));
+
+        // - Solo se actualizan campos editables; evitar cambiar associations a menos que la API lo permita explícitamente.
         review.setComment(reviewDTO.getComment());
         review.setRating(reviewDTO.getRating());
-        review.setUpdatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now()); // marcar fecha de modificación
         Review savedReview= reviewRepository.save(review);
         return ReviewMapper.mapReviewtoReviewDTO(savedReview);
     }
@@ -61,7 +67,7 @@ public class ReviewServiceImpls implements ReviewService {
     public String deleteReview(Long id) {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Usuario no encontrado con id: " + id));
-
+        // - Al eliminar la review, JPA manejará las referencias; si hay constraints en BD, se lanzará excepción.
         reviewRepository.delete(review);
         return "Review con ID " + id + " eliminado exitosamente.";
     }
@@ -71,6 +77,7 @@ public class ReviewServiceImpls implements ReviewService {
         Review review = reviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Review no encontrada con id: " + id));
 
+        // - Asegurarse que si se necesita product.name o user.name, las relaciones estén inicializadas (transacción activa).
         return ReviewMapper.mapReviewtoReviewDTO(review);
     }
 

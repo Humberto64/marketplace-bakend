@@ -8,6 +8,6 @@ public interface ProductService {
     ProductDTO createProduct(ProductDTO productDTO);
     ProductDTO updateProduct(Long id, ProductDTO productDTO);
     String cancelProduct(Long id);
-    ProductDTO getProductById(Long id);
-    List<ProductDTO> getAllProducts();
+    ProductDTO getProductById(Long id); // Recupera y mapea a DTO.
+    List<ProductDTO> getAllProducts(); // Lista todos los productos mapeados a DTO.
 }

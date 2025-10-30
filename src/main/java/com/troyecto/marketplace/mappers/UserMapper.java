@@ -48,6 +48,7 @@ public class UserMapper {
         dto.setRole(user.getRole());
         dto.setOrders(orderDTOs);
         dto.setReviews(reviewDTOs);
+        dto.setStores(storeDTOs);
         return dto;
     }
 
@@ -71,7 +72,7 @@ public class UserMapper {
                     .map(ReviewMapper::mapReviewDTOtoReview)
                     .forEach(user::addReview);
         }
-        if(dto.getOrders() != null){
+        if(dto.getOrders() != null) {
             dto.getOrders().stream()
                     .filter(Objects::nonNull)
                     .map(OrderMapper::mapOrderDTOtoOrder)

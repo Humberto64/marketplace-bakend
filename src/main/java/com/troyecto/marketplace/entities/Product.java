@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data // Incluye Getters, Setters, etc. (Lombok)
+@Data // Incluye Getters, Setters, equals, hashCode, toString (Lombok)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "products") // Mapea a una tabla llamada 'products'
@@ -39,6 +39,7 @@ public class Product {
             foreignKey = @ForeignKey(name="fk_product_store"))
     @JsonBackReference
     private Store store;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -47,14 +48,21 @@ public class Product {
         orderItems.add(orderItem);
         orderItem.setProduct(this);
     }
+    // - Importante: se actualizan ambas referencias (lista y orderItem.product) para mantener la consistencia
+    //   y que JPA detecte correctamente los cambios.
 
     public void  removeOrderItem(OrderItem orderItem) {
         orderItems.remove(orderItem);
         orderItem.setProduct(null);
     }
+    // - Al quitar, además de eliminar de la lista, se rompe la referencia al padre. Con orphanRemoval=true
+    //   JPA borrará el registro si persiste así.
+
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     private List<Review> reviews = new ArrayList<>();
+    // - Misma lógica que en orderItems: colección administrada por Product.
+
     public void  addReview(Review review) {
         reviews.add(review);
         review.setProduct(this);

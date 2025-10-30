@@ -73,4 +73,14 @@ public class StoreServiceImpl implements StoreService {
                 .map(StoreMapper::toDTO)
                 .toList();
     }
+
+    // Comentarios importantes sobre el servicio:
+    // - La verificación existsByName evita violaciones del constraint único antes de intentar guardar.
+    // - Se recupera la entidad User en el servicio y se asocia a Store; esto debe hacerse en el servicio
+    //   porque el mapper no tiene acceso a repositorios.
+    // - @Transactional en la clase asegura que operaciones compuestas (ej. guardar store y sus productos)
+    //   se ejecuten en una transacción; además ayuda a evitar LazyInitializationException cuando se accede
+    //   a colecciones dentro del servicio.
+    // - Las excepciones ResourceNotFoundException son específicas para NOT FOUND; IllegalArgumentException se usa
+    //   para validaciones de entrada (nombre duplicado).
 }

@@ -24,4 +24,10 @@ public class StoreDTO {
     private Long userId;
     private String userName;
     private List<ProductDTO> products;
+
+    // Comentarios:
+    // - @NotBlank / @Size: validaciones que se aplican típicamente cuando se usa @Valid en el controlador.
+    // - userId/userName: el DTO expone sólo el id de usuario y el nombre legible, no la entidad User entera.
+    // - La lista 'products' usa ProductDTO para evitar exponer la entidad Product en la API.
+    // - Importar la entidad Product aquí no es necesario; el DTO debe usar otros DTOs (ProductDTO).
 }

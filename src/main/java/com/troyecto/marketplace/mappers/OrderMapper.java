@@ -31,6 +31,10 @@ public class OrderMapper {
 
         orderDTO.setOrderItems(orderItemsDTO);
 
+
+        // No se mapea userId/userName aquí porque la entidad Order tiene relación lazy; en los servicios se asignan explícitamente si se necesita.
+        //Evitar acceder a order.getUser().getId() aquí sin comprobar que la relación esté inicializada para prevenir LazyInitializationException.
+
         return orderDTO;
     }
 
@@ -47,9 +51,9 @@ public class OrderMapper {
 
         if (orderDTO.getOrderItems() != null) {
             orderDTO.getOrderItems().stream()
-                    .filter(Objects::nonNull)
+                    .filter(Objects::nonNull) // Comentario: evita NPE si la lista contiene elementos nulos.
                     .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)
-                    .forEach(order::addOrderItem);
+                    .forEach(order::addOrderItem); // Añade cada item y mantiene la relación bidireccional via addOrderItem.
         }
         return order;
     }

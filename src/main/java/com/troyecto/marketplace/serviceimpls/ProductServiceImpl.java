@@ -28,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
         Product product = ProductMapper.mapProductDTOtoProduct(productDTO);
@@ -39,6 +40,11 @@ public class ProductServiceImpl implements ProductService {
         Product savedProduct = productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(savedProduct);
     }
+    // Comentario:
+    // - Se asigna publishedDate aquí para reflejar la fecha de creación.
+    // - Se recupera la Store desde BD y se asocia a Product; hacerlo aquí en el servicio es correcto
+    //   porque el mapper no tiene acceso a repositorios.
+
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product=productRepository.findById(id).
@@ -50,10 +56,16 @@ public class ProductServiceImpl implements ProductService {
         product.setId(product.getId());
         product.setPublishedDate(productDTO.getPublishedDate());
         product.setStock(productDTO.getStock());
+
+        // Limpieza de colecciones existentes antes de reemplazarlas
         product.getOrderItems().forEach(oI -> oI.setProduct(null));
         product.getOrderItems().clear();
         product.getReviews().forEach(R -> R.setProduct(null));
         product.getReviews().clear();
+        // Comentario:
+        // - Romper las referencias bidireccionales y limpiar las listas evita "leaks" y permite
+        //   que JPA elimine los registros huérfanos cuando orphanRemoval=true.
+
         if(productDTO.getOrderItem() != null) {
             productDTO.getOrderItem().forEach(oI ->
                     product.addOrderItem(OrderItemMapper.mapOrderItemDTOtoOrderItem(oI)));
@@ -65,6 +77,11 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(product);
     }
+    // Comentario:
+    // - El método actualiza campos simples y reemplaza colecciones usando los add* para mantener consistencia.
+    // - La anotación @Transactional en la clase asegura que las operaciones de lectura/escritura
+    //   ocurran dentro de una transacción, evitando LazyInitializationException al acceder a colecciones.
+
     @Override
     public String cancelProduct(Long id){
         Product product = productRepository.findById(id)

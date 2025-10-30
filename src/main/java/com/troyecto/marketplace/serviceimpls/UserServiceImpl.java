@@ -55,10 +55,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDetails.getPassword());
         user.setRole(userDetails.getRole());
 
+        // Limpieza de colecciones: romper referencias y vaciar listas para reemplazo total.
         user.getOrders().forEach(d -> d.setUser(null));
         user.getOrders().clear();
         user.getReviews().forEach(d -> d.setUser(null));
         user.getReviews().clear();
+
+        // Comentario:
+        // - Aquí se re-agregan orders/reviews desde DTO usando los mappers; se debe tener cuidado con IDs y con persistencia.
         if (userDetails.getOrders() != null) {
             userDetails.getOrders().forEach(orderDto ->
                     user.addOrder(OrderMapper.mapOrderDTOtoOrder(orderDto)));
@@ -80,6 +84,8 @@ public class UserServiceImpl implements UserService {
     public String deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Usuario no encontrado con id: " + id));
+        // Comentario:
+        // - Al eliminar el usuario, por cascade = ALL las entidades relacionadas (orders/reviews/stores) se eliminarán o quedarán huérfanas según la configuración.
         userRepository.delete(user);
         return "Registro con ID " + id + " eliminado exitosamente.";
     }

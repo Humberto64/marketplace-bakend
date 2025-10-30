@@ -27,16 +27,18 @@ public class OrderServiceImpls implements OrderService {
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = OrderMapper.mapOrderDTOtoOrder(orderDTO);
-        verifyUser(orderDTO.getUserId());
+        verifyUser(orderDTO.getUserId()); // Verifica que el usuario exista antes de asociarlo.
 
-        order.setOrderDate(LocalDateTime.now());
+        order.setOrderDate(LocalDateTime.now()); // Fecha actual para la orden.
 
         User user = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        order.setUser(user);
+        order.setUser(user); // Asociar la entidad User a la Order antes de guardar.
         Order savedOrder = orderRepository.save(order);
         return OrderMapper.mapOrderToOrderDTO(savedOrder);
     }
+    // Comentario:
+    // - Se mapea DTO->entidad, se asocia el user y se guarda. Importante: mapear los OrderItems antes de setUser para mantener la consistencia.
 
     @Override
     public OrderDTO updateOrder(Long orderId, OrderDTO orderDTO) {
@@ -52,6 +54,9 @@ public class OrderServiceImpls implements OrderService {
 
         order.getOrderItems().forEach(oI -> oI.setOrder(null));
         order.getOrderItems().clear();
+        // Comentario:
+        // - Primero se limpia la relación de cada OrderItem para romper la referencia bidireccional.
+        // - Luego se limpia la lista. Con orphanRemoval=true, al guardar JPA eliminará los items huérfanos.
 
         if (orderDTO.getOrderItems() != null) {
             orderDTO.getOrderItems().forEach(oI ->
@@ -61,6 +66,8 @@ public class OrderServiceImpls implements OrderService {
         Order updateOrder = orderRepository.save(order);
         return OrderMapper.mapOrderToOrderDTO(updateOrder);
     }
+    // Comentario:
+    // - Al reemplazar la colección de items, es importante mantener la gestión de la relación para que JPA pueda sincronizar correctamente.
 
     @Override
     public OrderDTO getOrderById(Long orderId) {
@@ -89,6 +96,7 @@ public class OrderServiceImpls implements OrderService {
                 .map(OrderMapper::mapOrderToOrderDTO)
                 .toList();
     }
+    // - @Transactional(readOnly = true) ayuda a optimizar las lecturas y evita LazyInitializationException si se accede a colecciones correctamente dentro del contexto transaccional.
 
     @Override
     public List<OrderDTO> listAll() {
@@ -103,4 +111,6 @@ public class OrderServiceImpls implements OrderService {
         userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado id: " + id));
     }
+    // Comentario:
+    // - Método auxiliar simple para lanzar excepción si el usuario no existe.
 }

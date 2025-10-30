@@ -63,4 +63,11 @@ public class StoreMapper {
         dto.setProducts(productDTO);
         return dto;
     }
+
+    // Comentarios generales sobre este mapper:
+    // - Se usan los métodos addProduct para mantener la relación bidireccional (setear Store en cada Product).
+    // - Al mapear entity.getProducts() hay que asegurarse que la colección esté inicializada (evitar LazyInitializationException).
+    //   Por eso, el mapeo de colecciones es más seguro dentro de una transacción o después de forzar la inicialización.
+    // - No se resuelven relaciones a partir de ids aquí (p. ej. userId -> User): eso debe hacerse en el servicio
+    //   porque el mapper no tiene acceso a repositorios ni contexto de persistencia.
 }

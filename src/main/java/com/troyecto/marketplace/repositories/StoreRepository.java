@@ -10,5 +10,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     // Método que implementa la lógica de negocio:
     // Permite verificar si ya existe una tienda con el mismo nombre (gracias a 'unique=true' en la entidad)
+    // Es útil para validaciones antes de persistir una nueva tienda en la base de datos.
     boolean existsByName(String name);
 }

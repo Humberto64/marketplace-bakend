@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
-@RequestMapping("/api/orderItems") // Define la URL base para todos los endpoints en esta clase.
+@RestController
+@RequestMapping("/api/orderItems")
 @CrossOrigin("*")
 @AllArgsConstructor // Para inyectar el servicio.
 public class OrderItemController {
@@ -21,11 +21,10 @@ public class OrderItemController {
     @PostMapping
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
         OrderItemDTO savedOrderItem = orderItemService.createOrderItem(orderItemDTO);
-        return new ResponseEntity<>(savedOrderItem, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
+        return new ResponseEntity<>(savedOrderItem, HttpStatus.CREATED);
     }
 
     // Endpoint para OBTENER TODOS los usuarios.
-    // Se activa con una petición GET a http://localhost:8080/api/users
     @GetMapping
     public ResponseEntity<List<OrderItemDTO>> getAllOrderItems() {
         List<OrderItemDTO> orderItems = orderItemService.getAllOrderItems();

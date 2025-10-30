@@ -10,8 +10,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class ProductDTO {
 
     private Long id;
@@ -21,8 +19,12 @@ public class ProductDTO {
     private Integer stock;
     private LocalDateTime publishedDate;
     private Boolean isAvailable;
+
     private Long storeId;
     private String storeName;
+    // - storeId/storeName: se usan para representar la relación con Store en el DTO sin exponer la entidad.
+    // - Evita enviar la entidad Store completa en las respuestas.
+
     private List<OrderItemDTO> orderItem;
     private List<ReviewDTO> reviews;
 

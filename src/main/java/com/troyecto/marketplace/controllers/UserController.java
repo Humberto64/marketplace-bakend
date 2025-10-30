@@ -14,17 +14,18 @@ import java.util.List;
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
 @RequestMapping("/api/users") // Define la URL base para todos los endpoints en esta clase.
 @CrossOrigin("*")
-@AllArgsConstructor // Para inyectar el servicio.
+@AllArgsConstructor // Genera un constructor para inyección; combinar @AllArgsConstructor y @Autowired en campo es redundante.
 public class UserController {
 
     // Inyectamos el servicio que tiene toda la lógica de negocio.
     @Autowired
     private UserService userService;
-
     // Endpoint para CREAR un usuario.
     // Se activa con una petición POST a http://localhost:8080/api/users
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        // Comentario:
+        // - Aquí se recomienda usar @Valid en el parámetro y anotar UserDTO con constraints para validación automática.
         UserDTO savedUser = userService.createUser(userDTO);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
     }
@@ -44,6 +45,8 @@ public class UserController {
     }
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDetails) {
+        // Comentario:
+        // - Al actualizar colecciones (orders/reviews/stores) hay que considerar la estrategia (reemplazo total vs. parcial).
         UserDTO updatedUser = userService.updateUser(id, userDetails);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }

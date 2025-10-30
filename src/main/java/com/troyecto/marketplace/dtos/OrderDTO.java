@@ -26,6 +26,11 @@ public class OrderDTO {
 
     private Long userId;
     private String userName;
+    // Comentario:
+    // - El DTO contiene userId en lugar de la entidad User completa para evitar exponer la entidad JPA y facilitar la serialización.
+    // - userName es útil para mostrar información legible en respuestas sin cargar toda la entidad User.
 
     private List<OrderItemDTO> orderItems;
+    // Comentario:
+    // - Representa los items de la orden como DTOs. Mantener DTOs evita problemas de serialización y acoplamiento directo a entidades.
 }

@@ -1,7 +1,6 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.dtos.StoreDTO;
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.services.StoreService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,4 +57,4 @@ public class StoreController {
                 .badRequest()  // HTTP 400
                 .body(ex.getMessage()); // Devuelve el mensaje exacto del error
     }
-}
+    }

@@ -10,18 +10,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
-@RequestMapping("/api") // Define la URL base para todos los endpoints en esta clase.
+@RequestMapping("/api")
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-
+    // - @RequiredArgsConstructor genera un constructor con argumentos para las dependencias finales (inyección de OrderService).
+    // - Usar ResponseEntity permite controlar el cuerpo y el status HTTP devuelto.
 
     @PostMapping("/orders")
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO savedOrder = orderService.createOrder(orderDTO);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
+        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
     @PutMapping("/orders/{orderId}")
