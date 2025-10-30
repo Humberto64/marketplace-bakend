@@ -75,6 +75,7 @@ public class ProductMapper {
         product.setPrice(productDTO.getPrice());
         product.setStock(productDTO.getStock());
         product.setDescription(productDTO.getDescription());
+        product.setIsAvailable(productDTO.getIsAvailable());
 
         // publishedDate se copia directamente
         product.setPublishedDate(productDTO.getPublishedDate());

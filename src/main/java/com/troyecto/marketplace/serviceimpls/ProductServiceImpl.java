@@ -56,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
         product.setId(product.getId());
         product.setPublishedDate(productDTO.getPublishedDate());
         product.setStock(productDTO.getStock());
+        product.setIsAvailable(productDTO.getIsAvailable());
 
         // Limpieza de colecciones existentes antes de reemplazarlas
         product.getOrderItems().forEach(oI -> oI.setProduct(null));
