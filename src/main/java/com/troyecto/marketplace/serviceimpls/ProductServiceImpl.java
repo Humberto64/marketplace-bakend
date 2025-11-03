@@ -59,8 +59,9 @@ public class ProductServiceImpl implements ProductService {
         product.setIsAvailable(productDTO.getIsAvailable());
 
         // Limpieza de colecciones existentes antes de reemplazarlas
-        product.getOrderItems().forEach(oI -> oI.setProduct(null));
-        product.getOrderItems().clear();
+        product.getOrderItems().forEach(oI -> oI.setProduct(null));//forEach recorre cada element
+        //de la lista y rompe la referencia bidireccional
+        product.getOrderItems().clear();//clear vacía la lista
         product.getReviews().forEach(R -> R.setProduct(null));
         product.getReviews().clear();
         // Comentario:
@@ -72,8 +73,8 @@ public class ProductServiceImpl implements ProductService {
                     product.addOrderItem(OrderItemMapper.mapOrderItemDTOtoOrderItem(oI)));
         }
         if(productDTO.getReviews() != null) {
-            productDTO.getReviews().forEach(R ->
-                    product.addReview(ReviewMapper.mapReviewDTOtoReview(R)));
+            productDTO.getReviews().forEach(R ->//recorre cada elemento de la lista
+                    product.addReview(ReviewMapper.mapReviewDTOtoReview(R)));//Setea cada elemento de la lista tipo Review
         }
         productRepository.save(product);
         return ProductMapper.mapProductToProductDTO(product);
