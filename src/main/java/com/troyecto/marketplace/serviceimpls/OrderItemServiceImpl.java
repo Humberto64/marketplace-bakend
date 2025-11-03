@@ -30,7 +30,6 @@ public class OrderItemServiceImpl implements OrderItemService {
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = OrderItemMapper.mapOrderItemDTOtoOrderItem(orderItemDTO);
 
-        //orderItem.setSubtotal(orderItem.getQuantity() * orderItemDTO.getPrice());
         Order order = orderRepository.findById(orderItemDTO.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order"));
         orderItem.setOrder(order);
@@ -38,6 +37,9 @@ public class OrderItemServiceImpl implements OrderItemService {
         Product product = productRepository.findById(orderItemDTO.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product"));
         orderItem.setProduct(product);
+
+        OrderItem savedItem = orderItemRepository.save(orderItem);
+        updateOrderTotals(savedItem.getOrder().getId());
 
         return OrderItemMapper.mapOrderItemToOrderItemDTO(orderItemRepository.save(orderItem));
     }
@@ -67,7 +69,11 @@ public class OrderItemServiceImpl implements OrderItemService {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("No se pudo eliminar Item de la Orden.Item de la Orden no encontrado con id" + id));
 
+        Order order = orderItem.getOrder();
         orderItemRepository.delete(orderItem);
+
+        order.recalculateTotals();
+        orderRepository.save(order);
 
         return "Item de la orden con ID " + id + "eliminado exitosamente";
     }
@@ -91,6 +97,20 @@ public class OrderItemServiceImpl implements OrderItemService {
 
         OrderItem updateOrderItem = orderItemRepository.save(orderItem);
 
+        Order orderUpdate = updateOrderItem.getOrder();
+        orderUpdate.recalculateTotals();
+        orderRepository.save(orderUpdate);
+
         return OrderItemMapper.mapOrderItemToOrderItemDTO(updateOrderItem);
+    }
+
+    private void updateOrderTotals(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        double subtotal = order.getOrderItems().stream().mapToDouble(OrderItem::getSubtotal).sum();
+        int totalAmount = order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum();
+        order.setSubtotal(subtotal);
+        order.setTotalAmount(totalAmount);
+        orderRepository.save(order);
     }
 }

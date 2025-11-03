@@ -3,6 +3,7 @@ package com.troyecto.marketplace.mappers;
 import com.troyecto.marketplace.dtos.OrderDTO;
 import com.troyecto.marketplace.dtos.OrderItemDTO;
 import com.troyecto.marketplace.entities.Order;
+import com.troyecto.marketplace.entities.User;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +14,6 @@ public class OrderMapper {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setId(order.getId());
         orderDTO.setOrderDate(order.getOrderDate());
-        orderDTO.setOrderNumber(order.getOrderNumber());
         orderDTO.setCurrency(order.getCurrency());
         orderDTO.setTax(order.getTax());
         orderDTO.setPaymentStatus(order.getPaymentStatus());
@@ -31,6 +31,12 @@ public class OrderMapper {
 
         orderDTO.setOrderItems(orderItemsDTO);
 
+        User user = order.getUser();
+        if( user != null) {
+            orderDTO.setUserId(user.getId());
+            orderDTO.setUserName(user.getFirstName() + " " + user.getLastName());
+        }
+
 
         // No se mapea userId/userName aquí porque la entidad Order tiene relación lazy; en los servicios se asignan explícitamente si se necesita.
         //Evitar acceder a order.getUser().getId() aquí sin comprobar que la relación esté inicializada para prevenir LazyInitializationException.
@@ -41,7 +47,6 @@ public class OrderMapper {
     public static Order mapOrderDTOtoOrder(OrderDTO orderDTO) {
         Order order = new Order();
         order.setId(orderDTO.getId());
-        order.setOrderNumber(orderDTO.getOrderNumber());
         order.setSubtotal(orderDTO.getSubtotal());
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setTax(orderDTO.getTax());

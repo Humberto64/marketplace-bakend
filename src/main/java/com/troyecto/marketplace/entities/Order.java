@@ -20,18 +20,16 @@ public class Order {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private String orderNumber;
     //@Column(nullable = false)
     //private String buyer;   //Cambiar despues a ManytoOne con user
     //@Column(nullable = false)
     //private String seller;  //Cambiar despues a ManytoOne con user
+    //@Column(nullable = false)
+    private Double subtotal;
+    //@Column(nullable = false)
+    private Integer totalAmount;
     @Column(nullable = false)
-    private BigDecimal subtotal;
-    @Column(nullable = false)
-    private BigDecimal totalAmount;
-    @Column(nullable = false)
-    private BigDecimal tax;
+    private Integer tax;
     @Column(nullable = false)
     private String currency;
     @Column(nullable = false)
@@ -60,5 +58,15 @@ public class Order {
     public void removeOrderItem(OrderItem orderItem){
         orderItems.remove(orderItem);
         orderItem.setOrder(null);
+    }
+
+    public void recalculateTotals() {
+        this.subtotal = orderItems.stream()
+                .mapToDouble(OrderItem::getSubtotal)
+                .sum();
+
+        this.totalAmount = orderItems.stream()
+                .mapToInt(OrderItem::getQuantity)
+                .sum();
     }
    }

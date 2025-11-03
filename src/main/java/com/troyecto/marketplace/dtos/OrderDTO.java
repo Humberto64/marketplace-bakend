@@ -15,10 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderDTO {
     private Long id;
-    private String orderNumber;
-    private BigDecimal subtotal;
-    private BigDecimal totalAmount;
-    private BigDecimal tax;
+    private Double subtotal;
+    private Integer totalAmount;
+    private Integer tax;
     private String currency;
     private String payMethod;
     private String paymentStatus;

@@ -2,6 +2,7 @@ package com.troyecto.marketplace.serviceimpls;
 
 import com.troyecto.marketplace.dtos.OrderDTO;
 import com.troyecto.marketplace.entities.Order;
+import com.troyecto.marketplace.entities.OrderItem;
 import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderItemMapper;
@@ -45,23 +46,28 @@ public class OrderServiceImpls implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("No se puede actualizar la orden. Orden no econtranda con id: " + orderId));
 
-        order.setOrderNumber(orderDTO.getOrderNumber());
-        order.setSubtotal(orderDTO.getSubtotal());
-        order.setTotalAmount(orderDTO.getTotalAmount());
         order.setTax(orderDTO.getTax());
         order.setPayMethod(orderDTO.getPayMethod());
         order.setPaymentStatus(orderDTO.getPaymentStatus());
 
-        order.getOrderItems().forEach(oI -> oI.setOrder(null));
-        order.getOrderItems().clear();
-        // Comentario:
-        // - Primero se limpia la relación de cada OrderItem para romper la referencia bidireccional.
-        // - Luego se limpia la lista. Con orphanRemoval=true, al guardar JPA eliminará los items huérfanos.
-
         if (orderDTO.getOrderItems() != null) {
-            orderDTO.getOrderItems().forEach(oI ->
-                    order.addOrderItem(OrderItemMapper.mapOrderItemDTOtoOrderItem(oI)));
+            for (var oI : orderDTO.getOrderItems()) {
+                OrderItem newItem = OrderItemMapper.mapOrderItemDTOtoOrderItem(oI);
+
+                boolean exists = order.getOrderItems().stream()
+                        .anyMatch(existingItem -> existingItem.getId() != null &&
+                                existingItem.getId().equals(newItem.getId()));
+
+                if (!exists) {
+                    order.addOrderItem(newItem);
+                }
+            }
         }
+        int totalProducts = order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum();
+        double subtotal = order.getOrderItems().stream().mapToDouble(OrderItem::getSubtotal).sum();
+
+        order.setTotalAmount(totalProducts);
+        order.setSubtotal(subtotal);
 
         Order updateOrder = orderRepository.save(order);
         return OrderMapper.mapOrderToOrderDTO(updateOrder);
