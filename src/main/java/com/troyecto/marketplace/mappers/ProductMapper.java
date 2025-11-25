@@ -88,8 +88,8 @@ public class ProductMapper {
         // Mapeo de OrderItems: se filtran nulos y se usan los add* para mantener relaciones
         if (productDTO.getOrderItem() != null) {
             productDTO.getOrderItem().stream()
-                    .filter(Objects::nonNull)
-                    .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)
+                    .filter(Objects::nonNull)//Funcion lambda aplicada
+                    .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)//Lambda por referencia de metodo
                     .forEach(product::addOrderItem); // addOrderItem establece product en cada OrderItem
         }
 

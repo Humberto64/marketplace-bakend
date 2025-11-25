@@ -39,11 +39,7 @@ public class User {
     private String role;
     //cascade propaga las operaciones de persistencia de una entidad A a una B
     //Si borramos la entidad A se borraría la entidad B por ejemplo
-    // Relación OneToMany con Order:
     // - mappedBy indica que la entidad Order tiene la FK (relación bidireccional).
-    // - cascade = ALL: operaciones (persist, remove, etc.) se propagan a los orders.
-    // - orphanRemoval = true: si quitamos un Order de la lista y se persiste, JPA lo eliminará de la BD.
-    // - Inicializamos la lista para evitar NullPointerException al añadir elementos.
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Order> orders = new ArrayList<>();

@@ -24,13 +24,12 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Transactional
 public class ReviewServiceImpls implements ReviewService {
-    @Autowired
+    @Autowired//Inyeccion de dependencias automatica
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
-    @Override
+    @Override//Sobre escritura de metodos de la interfaz
     public ReviewDTO createReview(ReviewDTO reviewDTO) {
         reviewDTO.setCreatedAt(LocalDateTime.now());
         Review review= ReviewMapper.mapReviewDTOtoReview(reviewDTO);

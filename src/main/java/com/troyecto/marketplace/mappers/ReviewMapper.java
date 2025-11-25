@@ -1,7 +1,5 @@
 package com.troyecto.marketplace.mappers;
-
 import com.troyecto.marketplace.dtos.ReviewDTO;
-import com.troyecto.marketplace.entities.Order;
 import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.entities.Review;
 import com.troyecto.marketplace.entities.User;
