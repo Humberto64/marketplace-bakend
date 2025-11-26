@@ -34,7 +34,6 @@ public class ProductController {
         return  ResponseEntity.ok(ApiResponse.ok("Productos creado exitosamente", products));
         //  ResponseEntity.ok(products) es equivalente y más conciso.
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductResponse>> getProductsById(@PathVariable Long id){
         ProductResponse productResponse=productService.getProductById(id);

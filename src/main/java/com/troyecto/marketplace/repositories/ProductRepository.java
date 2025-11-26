@@ -9,7 +9,5 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT e.store.name, COUNT(e) FROM Product e GROUP BY e.store.name")
-    List<Object[]> countProductByStore();
-
     List<Object[]> countProductsByStore();
 }
