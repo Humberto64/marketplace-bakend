@@ -1,4 +1,5 @@
 package com.troyecto.marketplace.mappers;
+
 import com.troyecto.marketplace.dtos.product.ProductRequest;
 import com.troyecto.marketplace.dtos.product.ProductResponse;
 import com.troyecto.marketplace.entities.Product;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 import java.util.stream.Collectors;
 
-//Prueba
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
@@ -47,7 +48,7 @@ public interface ProductMapper {
         }else{
             productResponse.setReviewsId(new ArrayList<>());
         }
-        if(product.getStore() != null){
+        if(product.getOrderItems() != null){
             productResponse.setOrderItemsId(
                     product.getOrderItems().stream().
                             map(OrderItem->OrderItem.getId()).

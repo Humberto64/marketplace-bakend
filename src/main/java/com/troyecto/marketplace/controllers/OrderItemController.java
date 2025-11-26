@@ -1,8 +1,11 @@
 package com.troyecto.marketplace.controllers;
 
 
-import com.troyecto.marketplace.dtos.OrderItemDTO;
+import com.troyecto.marketplace.common.ApiResponse;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemRequest;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemResponse;
 import com.troyecto.marketplace.services.OrderItemService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,28 +22,29 @@ public class OrderItemController {
     private final OrderItemService orderItemService;
 
     @PostMapping
-    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) {
-        OrderItemDTO savedOrderItem = orderItemService.createOrderItem(orderItemDTO);
-        return new ResponseEntity<>(savedOrderItem, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<OrderItemResponse>> createOrderItem(@Valid @RequestBody OrderItemRequest orderItemRequest) {
+        OrderItemResponse savedOrderItem = orderItemService.createOrderItem(orderItemRequest);
+        return ResponseEntity.ok(ApiResponse.ok("OrderItem creado", savedOrderItem));
     }
 
-    // Endpoint para OBTENER TODOS los usuarios.
     @GetMapping
-    public ResponseEntity<List<OrderItemDTO>> getAllOrderItems() {
-        List<OrderItemDTO> orderItems = orderItemService.getAllOrderItems();
-        return new ResponseEntity<>(orderItems, HttpStatus.OK); // Devuelve la lista y un código 200.
+    public ResponseEntity<ApiResponse<List<OrderItemResponse>>> getAllOrderItems() {
+        List<OrderItemResponse> orderItems = orderItemService.getOrderItems();
+        return ResponseEntity.ok(ApiResponse.ok("OrderItems encontrados", orderItems));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderItemDTO> getOrderItemById(@PathVariable Long id) {
-        OrderItemDTO orderItem = orderItemService.getOrderItemById(id);
-        return new ResponseEntity<>(orderItem, HttpStatus.OK); // Devuelve el usuario y un código 200.
+    public ResponseEntity<ApiResponse<OrderItemResponse>> getOrderItemById(@PathVariable Long id) {
+        OrderItemResponse savedOrderItem = orderItemService.getOrderItemById(id);
+        return ResponseEntity.ok(ApiResponse.ok("OrderItem encontrado", savedOrderItem));
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<OrderItemDTO> updateOrderItem(@PathVariable Long id, @RequestBody OrderItemDTO orderItemDetails) {
-        OrderItemDTO updatedOrderItem = orderItemService.updateOrderItem(id, orderItemDetails);
-        return new ResponseEntity<>(updatedOrderItem, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<OrderItemResponse>> updateOrderItem (@PathVariable Long id, @Valid @RequestBody OrderItemRequest orderItemRequest) {
+        OrderItemResponse savedOrderItem = orderItemService.updateOrderItem(id, orderItemRequest);
+        return ResponseEntity.ok(ApiResponse.ok("OrderItem encontrado", savedOrderItem));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrderItem(@PathVariable Long id) {
         String message = orderItemService.deleteOrderItem(id);

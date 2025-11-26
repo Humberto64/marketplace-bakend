@@ -1,7 +1,10 @@
 package com.troyecto.marketplace.controllers;
 
-import com.troyecto.marketplace.dtos.OrderDTO;
+import com.troyecto.marketplace.common.ApiResponse;
+import com.troyecto.marketplace.dtos.order.OrderRequest;
+import com.troyecto.marketplace.dtos.order.OrderResponse;
 import com.troyecto.marketplace.services.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
-@RequestMapping("/api")
+@RequestMapping("/api/orders")
 @CrossOrigin("*")
 @RequiredArgsConstructor
 public class OrderController {
@@ -19,37 +22,33 @@ public class OrderController {
     // - @RequiredArgsConstructor genera un constructor con argumentos para las dependencias finales (inyección de OrderService).
     // - Usar ResponseEntity permite controlar el cuerpo y el status HTTP devuelto.
 
-    @PostMapping("/orders")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        OrderDTO savedOrder = orderService.createOrder(orderDTO);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<ApiResponse<OrderResponse>> addOrder(@Valid @RequestBody OrderRequest orderRequest) {
+        OrderResponse savedOrder = orderService.createOrder(orderRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Orden creada exitosamente", savedOrder));
     }
 
-    @PutMapping("/orders/{orderId}")
-    public ResponseEntity<OrderDTO> updateOrder(@PathVariable Long orderId, @RequestBody OrderDTO orderDetails) {
-        OrderDTO updatedOrder = orderService.updateOrder(orderId, orderDetails);
-        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllOrders() {
+        List<OrderResponse> savedOrders = orderService.getAllOrders();
+        return ResponseEntity.ok(ApiResponse.ok("Ordenes encontradas exitosamente", savedOrders));
     }
 
-    @DeleteMapping("/orders/{orderId}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long orderId) {
-        String message = orderService.cancelOrder(orderId);
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> getOrderById(@PathVariable Long id) {
+        OrderResponse orderResponse = orderService.getOrderById(id);
+        return ResponseEntity.ok(ApiResponse.ok("Orden encontrada exitosamente", orderResponse));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<OrderResponse>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderRequest orderRequest) {
+        OrderResponse savedOrder = orderService.updateOrder(id, orderRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Orden encontrada exitosamente", savedOrder));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+        String message = orderService.deleteOrder(id);
         return new ResponseEntity<>(message, HttpStatus.OK);
-    }
-
-    @GetMapping("/users/{userId}/orders")
-    public ResponseEntity<List<OrderDTO>> List(@PathVariable Long userId) {
-        return ResponseEntity.ok(orderService.listByUserId(userId));
-    }
-
-    @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> ListAll() {
-        return ResponseEntity.ok(orderService.listAll());
-    }
-
-    @GetMapping("/orders/{orderId}")
-    public ResponseEntity<OrderDTO> getOrder(@PathVariable Long orderId) {
-        OrderDTO order = orderService.getOrderById(orderId);
-        return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }

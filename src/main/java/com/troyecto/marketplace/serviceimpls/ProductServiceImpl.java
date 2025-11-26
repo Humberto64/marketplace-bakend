@@ -26,13 +26,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse createProduct(ProductRequest productRequest) {
         Store store=storeRepository.findById(productRequest.getStoreId())
-                .orElseThrow(()->new ResourceNotFoundException("Store not found with id: "+productRequest.getStoreId()));;
+                .orElseThrow(()->new ResourceNotFoundException("Store not found with id: "+productRequest.getStoreId()));
         Product product=productMapper.mapProductRequestToProduct(productRequest);
         product.setPublishedDate(LocalDateTime.now());
         product.setStore(store);
         Product savedProduct=productRepository.save(product);
         return productMapper.mapProductToProductResponse(savedProduct);
     }
+
     @Override
     public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         Product product=productRepository.findById(id)

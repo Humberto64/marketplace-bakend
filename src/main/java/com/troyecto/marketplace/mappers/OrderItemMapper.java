@@ -1,39 +1,51 @@
 package com.troyecto.marketplace.mappers;
 
-import com.troyecto.marketplace.dtos.OrderItemDTO;
-import com.troyecto.marketplace.entities.Order;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemRequest;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemResponse;
 import com.troyecto.marketplace.entities.OrderItem;
-import com.troyecto.marketplace.entities.Product;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-public class OrderItemMapper {
-    public static OrderItemDTO mapOrderItemToOrderItemDTO(OrderItem orderItem){
-        OrderItemDTO dto = new OrderItemDTO();
-        dto.setId(orderItem.getId());
-        dto.setQuantity(orderItem.getQuantity());
-        dto.setPrice(orderItem.getPrice());
-        dto.setSubtotal(orderItem.getSubtotal());
+@Mapper( componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface OrderItemMapper {
 
-        Order order = orderItem.getOrder();
-        if (order != null){
-            dto.setOrderId(order.getId());
-        }
-
-        Product product = orderItem.getProduct();
-        if (product != null){
-            dto.setProductId(product.getId());
-            dto.setProductName(product.getName());
-        }
-
-        return dto;
-    }
-
-    public static OrderItem mapOrderItemDTOtoOrderItem(OrderItemDTO orderItemdto){
+    default OrderItem mapOrderItemRequestToOrderItem(OrderItemRequest orderItemRequest) {
+        if (orderItemRequest == null) return null;
         OrderItem orderItem = new OrderItem();
-        orderItem.setId(orderItemdto.getId());
-        orderItem.setQuantity(orderItemdto.getQuantity());
-        orderItem.setPrice(orderItemdto.getPrice());
-        orderItem.setSubtotal(orderItemdto.getSubtotal());
+        orderItem.setQuantity(orderItemRequest.getQuantity());
+        orderItem.setPrice(orderItemRequest.getPrice());
+        orderItem.setSubtotal(orderItemRequest.getSubtotal());
 
         return orderItem;
+    }
+
+    default OrderItemResponse mapOrderItemToOrderItemResponse(OrderItem orderItem) {
+        if (orderItem == null) return null;
+        OrderItemResponse orderItemResponse = new OrderItemResponse();
+        orderItemResponse.setId(orderItem.getId());
+        orderItemResponse.setQuantity(orderItem.getQuantity());
+        orderItemResponse.setPrice(orderItem.getPrice());
+        orderItemResponse.setSubtotal(orderItem.getSubtotal());
+        if(orderItem.getOrder() != null) {
+            orderItemResponse.setOrderId(orderItem.getOrder().getId());
+        }
+        if(orderItem.getProduct() != null) {
+            orderItemResponse.setProductId(orderItem.getProduct().getId());
+        }
+        return orderItemResponse;
+    }
+
+    default void updateOrderItemFromRequest(OrderItemRequest orderItemRequest, OrderItem orderItem) {
+        if (orderItemRequest == null || orderItem == null) return;
+
+        if (orderItemRequest.getQuantity() != null){
+            orderItem.setQuantity(orderItemRequest.getQuantity());
+        }
+        if (orderItemRequest.getPrice() != null){
+            orderItem.setPrice(orderItemRequest.getPrice());
+        }
+        if (orderItemRequest.getSubtotal() != null){
+            orderItem.setSubtotal(orderItemRequest.getSubtotal());
+        }
     }
 }

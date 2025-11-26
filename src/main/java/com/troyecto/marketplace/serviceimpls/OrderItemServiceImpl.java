@@ -1,7 +1,8 @@
 package com.troyecto.marketplace.serviceimpls;
 
 
-import com.troyecto.marketplace.dtos.OrderItemDTO;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemRequest;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemResponse;
 import com.troyecto.marketplace.entities.Order;
 import com.troyecto.marketplace.entities.OrderItem;
 import com.troyecto.marketplace.entities.Product;
@@ -25,83 +26,56 @@ public class OrderItemServiceImpl implements OrderItemService {
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OrderItemMapper orderItemMapper;
 
     @Override
-    public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        OrderItem orderItem = OrderItemMapper.mapOrderItemDTOtoOrderItem(orderItemDTO);
-
-        Order order = orderRepository.findById(orderItemDTO.getOrderId())
+    public OrderItemResponse createOrderItem(OrderItemRequest orderItemRequest) {
+        OrderItem orderItem = orderItemMapper.mapOrderItemRequestToOrderItem(orderItemRequest);
+        Order order = orderRepository.findById(orderItemRequest.getOrderId())
                 .orElseThrow(() -> new ResourceNotFoundException("Order"));
         orderItem.setOrder(order);
-
-        Product product = productRepository.findById(orderItemDTO.getProductId())
+        Product product = productRepository.findById(orderItemRequest.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product"));
         orderItem.setProduct(product);
-
         OrderItem savedItem = orderItemRepository.save(orderItem);
         updateOrderTotals(savedItem.getOrder().getId());
-
-        return OrderItemMapper.mapOrderItemToOrderItemDTO(orderItemRepository.save(orderItem));
+        return orderItemMapper.mapOrderItemToOrderItemResponse(orderItemRepository.save(orderItem));
     }
 
     @Override
-    public OrderItemDTO getOrderItemById(Long id) {
+    public OrderItemResponse updateOrderItem(Long id, OrderItemRequest orderItemRequest) {
+        OrderItem orderItem = orderItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("OrderItem not found"));
+        orderItem.setQuantity(orderItemRequest.getQuantity());
+        orderItem.setPrice(orderItemRequest.getPrice());
+        orderItem.setSubtotal(orderItemRequest.getSubtotal());
+        return orderItemMapper.mapOrderItemToOrderItemResponse(orderItemRepository.save(orderItem));
+    }
 
+    @Override
+    public OrderItemResponse getOrderItemById(Long id) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Item de la Orden no encontrado con id" + id));
-
-        return OrderItemMapper.mapOrderItemToOrderItemDTO(orderItem);
-    }
-
-    @Override
-    public List<OrderItemDTO> getAllOrderItems() {
-
-        List<OrderItem> orderItems = orderItemRepository.findAll();
-
-        return orderItems.stream()
-                .map(OrderItemMapper::mapOrderItemToOrderItemDTO)
-                .collect(Collectors.toList());
+        return orderItemMapper.mapOrderItemToOrderItemResponse(orderItem);
     }
 
     @Override
     public String deleteOrderItem(Long id) {
-
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("No se pudo eliminar Item de la Orden.Item de la Orden no encontrado con id" + id));
-
         Order order = orderItem.getOrder();
         orderItemRepository.delete(orderItem);
-
         order.recalculateTotals();
         orderRepository.save(order);
-
         return "Item de la orden con ID " + id + "eliminado exitosamente";
     }
 
     @Override
-    public OrderItemDTO updateOrderItem(Long id, OrderItemDTO orderItemDTO) {
-        OrderItem orderItem = orderItemRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("No se pudo actualizar. Item de la orden no encontrado con id: " + id));
-
-        orderItem.setPrice(orderItemDTO.getPrice());
-        orderItem.setQuantity(orderItemDTO.getQuantity());
-        orderItem.setSubtotal(orderItemDTO.getSubtotal());
-
-        Order order = orderRepository.findById(orderItemDTO.getOrderId())
-                .orElseThrow(()-> new ResourceNotFoundException("Order"));
-        orderItem.setOrder(order);
-
-        Product product = productRepository.findById(orderItemDTO.getProductId())
-                .orElseThrow(()-> new ResourceNotFoundException("Product"));
-        orderItem.setProduct(product);
-
-        OrderItem updateOrderItem = orderItemRepository.save(orderItem);
-
-        Order orderUpdate = updateOrderItem.getOrder();
-        orderUpdate.recalculateTotals();
-        orderRepository.save(orderUpdate);
-
-        return OrderItemMapper.mapOrderItemToOrderItemDTO(updateOrderItem);
+    public List<OrderItemResponse> getOrderItems() {
+        return orderItemRepository.findAll()
+                .stream()
+                .map(orderItemMapper::mapOrderItemToOrderItemResponse)
+                .collect(Collectors.toList());
     }
 
     private void updateOrderTotals(Long orderId) {

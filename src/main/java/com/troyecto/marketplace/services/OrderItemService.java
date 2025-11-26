@@ -1,13 +1,15 @@
 package com.troyecto.marketplace.services;
 
 import com.troyecto.marketplace.dtos.OrderItemDTO;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemRequest;
+import com.troyecto.marketplace.dtos.orderItem.OrderItemResponse;
 
 import java.util.List;
 
 public interface OrderItemService {
-    OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO);
-    OrderItemDTO getOrderItemById(Long id);
-    List<OrderItemDTO> getAllOrderItems();
+    OrderItemResponse createOrderItem(OrderItemRequest orderItemRequest);
+    OrderItemResponse updateOrderItem(Long id, OrderItemRequest orderItemRequest);
     String deleteOrderItem(Long id);
-    OrderItemDTO updateOrderItem(Long id, OrderItemDTO orderItemDTO);
+    List<OrderItemResponse> getOrderItems();
+    OrderItemResponse getOrderItemById(Long id);
 }

@@ -1,65 +1,77 @@
 package com.troyecto.marketplace.mappers;
 
-import com.troyecto.marketplace.dtos.OrderDTO;
-import com.troyecto.marketplace.dtos.OrderItemDTO;
+import com.troyecto.marketplace.dtos.order.OrderRequest;
+import com.troyecto.marketplace.dtos.order.OrderResponse;
 import com.troyecto.marketplace.entities.Order;
-import com.troyecto.marketplace.entities.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class OrderMapper {
-    public static OrderDTO mapOrderToOrderDTO(Order order) {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setId(order.getId());
-        orderDTO.setOrderDate(order.getOrderDate());
-        orderDTO.setCurrency(order.getCurrency());
-        orderDTO.setTax(order.getTax());
-        orderDTO.setPaymentStatus(order.getPaymentStatus());
-        orderDTO.setPayMethod(order.getPayMethod());
-        orderDTO.setTotalAmount(order.getTotalAmount());
-        orderDTO.setSubtotal(order.getSubtotal());
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface OrderMapper {
 
-        List<OrderItemDTO> orderItemsDTO = null;
-        if(order.getOrderItems() != null) {
-            orderItemsDTO = order.getOrderItems()
-                    .stream()
-                    .map(OrderItemMapper::mapOrderItemToOrderItemDTO)
-                    .collect(Collectors.toList());
-        }
-
-        orderDTO.setOrderItems(orderItemsDTO);
-
-        User user = order.getUser();
-        if( user != null) {
-            orderDTO.setUserId(user.getId());
-            orderDTO.setUserName(user.getFirstName() + " " + user.getLastName());
-        }
-
-
-        // No se mapea userId/userName aquí porque la entidad Order tiene relación lazy; en los servicios se asignan explícitamente si se necesita.
-        //Evitar acceder a order.getUser().getId() aquí sin comprobar que la relación esté inicializada para prevenir LazyInitializationException.
-
-        return orderDTO;
+    default Order mapOrderRequestToOrder(OrderRequest orderRequest) {
+        if (orderRequest == null) return null;
+        Order order = new Order();
+        order.setSubtotal(orderRequest.getSubtotal());
+        order.setTotalAmount(orderRequest.getTotalAmount());
+        order.setTax(orderRequest.getTax());
+        order.setCurrency(orderRequest.getCurrency());
+        order.setPayMethod(orderRequest.getPayMethod());
+        order.setPaymentStatus(orderRequest.getPaymentStatus());
+        return order;
     }
 
-    public static Order mapOrderDTOtoOrder(OrderDTO orderDTO) {
-        Order order = new Order();
-        order.setId(orderDTO.getId());
-        order.setSubtotal(orderDTO.getSubtotal());
-        order.setTotalAmount(orderDTO.getTotalAmount());
-        order.setTax(orderDTO.getTax());
-        order.setCurrency(orderDTO.getCurrency());
-        order.setPayMethod(orderDTO.getPayMethod());
-        order.setPaymentStatus(orderDTO.getPaymentStatus());
+    default OrderResponse mapOrderToOrderResponse(Order order) {
+        if (order == null) return null;
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setId(order.getId());
+        orderResponse.setSubtotal(order.getSubtotal());
+        orderResponse.setTotalAmount(order.getTotalAmount());
+        orderResponse.setTax(order.getTax());
+        orderResponse.setCurrency(order.getCurrency());
+        orderResponse.setPayMethod(order.getPayMethod());
+        orderResponse.setPaymentStatus(order.getPaymentStatus());
 
-        if (orderDTO.getOrderItems() != null) {
-            orderDTO.getOrderItems().stream()
-                    .filter(Objects::nonNull) // Comentario: evita NPE si la lista contiene elementos nulos.
-                    .map(OrderItemMapper::mapOrderItemDTOtoOrderItem)
-                    .forEach(order::addOrderItem); // Añade cada item y mantiene la relación bidireccional via addOrderItem.
+        if (order.getUser() != null) {
+            orderResponse.setUserId(order.getUser().getId());
         }
-        return order;
+        if(order.getOrderItems() != null) {
+            orderResponse.setOrderItemsId(
+                    order.getOrderItems().stream().
+                            map(OrderItem->OrderItem.getId()).
+                            collect(Collectors.toList())
+            );
+        } else {
+            orderResponse.setOrderItemsId(new ArrayList<>());
+        }
+
+        return orderResponse;
+    }
+
+    default void updateOrderFromRequest(OrderRequest orderRequest, Order order) {
+        if (orderRequest == null || order == null) {
+            return;
+        }
+        if (orderRequest.getSubtotal() != null) {
+            order.setSubtotal(orderRequest.getSubtotal());
+        }
+        if (orderRequest.getTotalAmount() != null) {
+            order.setTotalAmount(orderRequest.getTotalAmount());
+        }
+        if (orderRequest.getTax() != null) {
+            order.setTax(orderRequest.getTax());
+        }
+        if (orderRequest.getCurrency() != null) {
+            order.setCurrency(orderRequest.getCurrency());
+        }
+        if (orderRequest.getPayMethod() != null) {
+            order.setPayMethod(orderRequest.getPayMethod());
+        }
+        if (orderRequest.getPaymentStatus() != null) {
+            order.setPaymentStatus(orderRequest.getPaymentStatus());
+        }
     }
 }
