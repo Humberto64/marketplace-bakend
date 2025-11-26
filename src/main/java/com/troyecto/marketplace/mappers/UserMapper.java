@@ -4,86 +4,77 @@ import com.troyecto.marketplace.dtos.OrderDTO;
 import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.dtos.StoreDTO;
 import com.troyecto.marketplace.dtos.UserDTO;
+import com.troyecto.marketplace.dtos.user.UserRequest;
+import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.entities.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 
-public class UserMapper {
-
-
-    public static UserDTO toDTO(User user) {
-        if  (user == null) return null;
-        List<ReviewDTO> reviewDTOs = null;
-        if(user.getReviews() != null) {
-            reviewDTOs= user.getReviews()
-                    .stream()
-                    .map(ReviewMapper::mapReviewtoReviewDTO)
-                    .collect(Collectors.toList());
-        }
-        List<OrderDTO> orderDTOs = null;
-        if(user.getOrders() != null) {
-            orderDTOs = user.getOrders()
-                    .stream()
-                    .map(OrderMapper::mapOrderToOrderDTO)
-                    .collect(Collectors.toList());
-        }
-        List<StoreDTO> storeDTOs = null;
-        if(user.getStores() != null) {
-            storeDTOs=user.getStores()
-                    .stream()
-                    .map(StoreMapper::toDTO)
-                    .collect(Collectors.toList());
-
-        }
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setPassword(user.getPassword());
-        dto.setAddress(user.getAddress());
-        dto.setRole(user.getRole());
-        dto.setOrders(orderDTOs);
-        dto.setReviews(reviewDTOs);
-        dto.setStores(storeDTOs);
-        return dto;
-    }
-
-
-    public static User toEntity(UserDTO dto) {
-        if(dto == null) return null;
-
+public interface UserMapper {
+    //DTO->ENTITY
+    default User toEntity(UserRequest userRequest) {
+        if(userRequest==null) return null;
         User user = new User();
-
-        user.setId(dto.getId());
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setEmail(dto.getEmail());
-        user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword());
-        user.setAddress(dto.getAddress());
-        user.setRole(dto.getRole());
-        if(dto.getReviews() != null) {
-            dto.getReviews().stream()
-                    .filter(Objects::nonNull)
-                    .map(ReviewMapper::mapReviewDTOtoReview)
-                    .forEach(user::addReview);
-        }
-        if(dto.getOrders() != null) {
-            dto.getOrders().stream()
-                    .filter(Objects::nonNull)
-                    .map(OrderMapper::mapOrderDTOtoOrder)
-                    .forEach(user::addOrder);
-        }
-        if (dto.getStores() != null) {
-            dto.getStores().stream()
-                    .filter(Objects::nonNull)
-                    .map(StoreMapper::toEntity)
-                    .forEach(user::addStore);
-        }
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setEmail(userRequest.getEmail());
+        user.setRole(userRequest.getRole());
+        user.setAddress(userRequest.getAddress());
+        user.setPhone(userRequest.getPhone());
         return user;
     }
+    default UserResponse toResponse(User user) {
+        if(user==null) return null;
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(user.getId());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setRole(user.getRole());
+        userResponse.setAddress(user.getAddress());
+        userResponse.setPhone(user.getPhone());
+        if(user.getOrders()!=null) {
+            userResponse.setOrdersId(
+                    user.getOrders().stream().
+                            map(order -> order.getId()).
+                            collect(Collectors.toList())
+            );
+        }
+        if(user.getStores()!=null) {
+            userResponse.setStoresId(
+                    user.getStores().stream().
+                            map(store -> store.getId()).
+                            collect(Collectors.toList())
+            );
+        }
+        if(user.getReviews()!=null) {
+            userResponse.setReviewsId(
+                    user.getReviews().stream().
+                            map(review -> review.getId()).
+                            collect(Collectors.toList())
+            );
+        }
+        return userResponse;
+    }
+    default void updateUserFromDto(UserRequest userRequest, User user) {
+        if(userRequest==null || user==null) return;
+        if(userRequest.getFirstName()!=null && !userRequest.getFirstName().isBlank())
+            user.setFirstName(userRequest.getFirstName());
+        if(userRequest.getLastName()!=null && !userRequest.getLastName().isBlank())
+            user.setLastName(userRequest.getLastName());
+        if(userRequest.getEmail()!=null && !userRequest.getEmail().isBlank())
+            user.setEmail(userRequest.getEmail());
+        if(userRequest.getRole()!=null && !userRequest.getRole().isBlank())
+            user.setRole(userRequest.getRole());
+        if(userRequest.getAddress()!=null)
+            user.setAddress(userRequest.getAddress());
+        if(userRequest.getPhone()!=null)
+            user.setPhone(userRequest.getPhone());
+    }
+
 }

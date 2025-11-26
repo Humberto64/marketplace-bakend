@@ -34,8 +34,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
     private String role;
     //cascade propaga las operaciones de persistencia de una entidad A a una B
     //Si borramos la entidad A se borraría la entidad B por ejemplo

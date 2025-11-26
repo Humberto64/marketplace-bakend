@@ -1,8 +1,12 @@
 // Ubicación: src/main/java/com/troyecto/marketplace/controllers/UserController.java
 package com.troyecto.marketplace.controllers;
 
+import com.troyecto.marketplace.common.ApiResponse;
 import com.troyecto.marketplace.dtos.UserDTO;
+import com.troyecto.marketplace.dtos.user.UserRequest;
+import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.services.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,36 +27,36 @@ public class UserController {
     // Endpoint para CREAR un usuario.
     // Se activa con una petición POST a http://localhost:8080/api/users
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody UserResponse userResponse) {
         // Comentario:
         // - Aquí se recomienda usar @Valid en el parámetro y anotar UserDTO con constraints para validación automática.
-        UserDTO savedUser = userService.createUser(userDTO);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
+        UserResponse savedUser = userService.createUser(userResponse);
+        return ResponseEntity.ok(ApiResponse.ok("User creado con exito",savedUser)); // Devuelve el usuario creado y un código 201.
     }
 
     // Endpoint para OBTENER TODOS los usuarios.
     // Se activa con una petición GET a http://localhost:8080/api/users
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK); // Devuelve la lista y un código 200.
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+        List<UserResponse> users = userService.getAllUsers();
+        return ResponseEntity.ok(ApiResponse.ok("Lista encontrad",users)); // Devuelve la lista y un código 200.
     }
 
      @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        UserDTO user = userService.getUserById(id);
-        return new ResponseEntity<>(user, HttpStatus.OK); // Devuelve el usuario y un código 200.
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
+        UserResponse user = userService.getUserById(id);
+        return  ResponseEntity.ok(ApiResponse.ok("Usuario encontrado",user)); // Devuelve el usuario y un código 200.
     }
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDetails) {
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable Long id, @Valid@RequestBody UserRequest userDetails) {
         // Comentario:
         // - Al actualizar colecciones (orders/reviews/stores) hay que considerar la estrategia (reemplazo total vs. parcial).
-        UserDTO updatedUser = userService.updateUser(id, userDetails);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+        UserResponse updatedUser = userService.updateUser(id, userDetails);
+        return  ResponseEntity.ok(ApiResponse.ok("Usuario actualizado",updatedUser)); // Devuelve el usuario actualizado y un código 200.
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         String message = userService.deleteUser(id);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return  ResponseEntity.ok(message); // Devuelve un mensaje de éxito y un código 200.
     }
 }
