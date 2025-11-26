@@ -1,13 +1,15 @@
 package com.troyecto.marketplace.services;
 
 import com.troyecto.marketplace.dtos.ProductDTO;
+import com.troyecto.marketplace.dtos.product.ProductRequest;
+import com.troyecto.marketplace.dtos.product.ProductResponse;
 
 import java.util.List;
 
 public interface ProductService {
-    ProductDTO createProduct(ProductDTO productDTO);
-    ProductDTO updateProduct(Long id, ProductDTO productDTO);
+    ProductResponse createProduct(ProductRequest productRequest);
+    ProductResponse updateProduct(Long id, ProductRequest productRequest);
     String cancelProduct(Long id);
-    ProductDTO getProductById(Long id); // Recupera y mapea a DTO.
-    List<ProductDTO> getAllProducts(); // Lista todos los productos mapeados a DTO.
+    ProductResponse getProductById(Long id); // Recupera y mapea a DTO.
+    List<ProductResponse> getAllProducts(); // Lista todos los productos mapeados a DTO.
 }

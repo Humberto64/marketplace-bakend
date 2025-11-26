@@ -1,6 +1,8 @@
 package com.troyecto.marketplace.serviceimpls;
 
 import com.troyecto.marketplace.dtos.ReviewDTO;
+import com.troyecto.marketplace.dtos.review.ReviewRequest;
+import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.entities.Review;
 import com.troyecto.marketplace.entities.User;
@@ -29,62 +31,51 @@ public class ReviewServiceImpls implements ReviewService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
-    @Override//Sobre escritura de metodos de la interfaz
-    public ReviewDTO createReview(ReviewDTO reviewDTO) {
-        reviewDTO.setCreatedAt(LocalDateTime.now());
-        Review review= ReviewMapper.mapReviewDTOtoReview(reviewDTO);
-        // Set product
-        // - Aquí se recupera la entidad Product desde su id y se asocia al review
-        //   no del mapper
-        Product product =productRepository.findById(reviewDTO.getProductId()).
-                orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        review.setProduct(product);
-
-        // Set user
-        User user=userRepository.findById(reviewDTO.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    private final ReviewMapper reviewMapper;
+    @Override
+    public ReviewResponse createReview(ReviewRequest reviewRequest) {
+        User user= userRepository.findById(reviewRequest.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id"+reviewRequest.getUserId()));
+        Product product= productRepository.findById(reviewRequest.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id"+reviewRequest.getProductId()));
+        Review review=reviewMapper.toEntity(reviewRequest);
         review.setUser(user);
-
-        Review savedReview=reviewRepository.save(review);
-        return ReviewMapper.mapReviewtoReviewDTO(savedReview);
+        review.setProduct(product);
+        review.setCreatedAt(LocalDateTime.now());
+        Review savedReview= reviewRepository.save(review);
+        return reviewMapper.toResponse(savedReview);
     }
 
     @Override
-    public ReviewDTO updateReview(Long id,ReviewDTO reviewDTO) {
-        Review review=reviewRepository.findById(id).
-                orElseThrow(()->new ResourceNotFoundException("No se puede actualizar. Review no encontrada con id: " + id));
-
-        // - Solo se actualizan campos editables; evitar cambiar associations a menos que la API lo permita explícitamente.
-        review.setComment(reviewDTO.getComment());
-        review.setRating(reviewDTO.getRating());
-        review.setUpdatedAt(LocalDateTime.now()); // marcar fecha de modificación
-        Review savedReview= reviewRepository.save(review);
-        return ReviewMapper.mapReviewtoReviewDTO(savedReview);
+    public ReviewResponse updateReview(Long id, ReviewRequest reviewdetails) {
+        Review review=reviewRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with id"+id));
+        review.setRating(reviewdetails.getRating());
+        review.setComment(reviewdetails.getComment());
+        review.setUpdatedAt(LocalDateTime.now());
+        Review updatedReview= reviewRepository.save(review);
+        return reviewMapper.toResponse(updatedReview);
     }
 
     @Override
     public String deleteReview(Long id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Usuario no encontrado con id: " + id));
-        // - Al eliminar la review, JPA manejará las referencias; si hay constraints en BD, se lanzará excepción.
+        Review review=reviewRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with id"+id));
         reviewRepository.delete(review);
-        return "Review con ID " + id + " eliminado exitosamente.";
+        return "Review deleted successfully";
     }
 
     @Override
-    public ReviewDTO getReviewById(Long id) {
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Review no encontrada con id: " + id));
-
-        // - Asegurarse que si se necesita product.name o user.name, las relaciones estén inicializadas (transacción activa).
-        return ReviewMapper.mapReviewtoReviewDTO(review);
+    public ReviewResponse getReviewById(Long id) {
+        Review review=reviewRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with id"+id));
+        return reviewMapper.toResponse(review);
     }
 
     @Override
-    public List<ReviewDTO> getAllReviews() {
-        List<Review> reviews = reviewRepository.findAll();
-        return reviews.stream()
-                .map(ReviewMapper::mapReviewtoReviewDTO)
+    public List<ReviewResponse> getAllReviews() {
+        return reviewRepository.findAll().stream()
+                .map(reviewMapper::toResponse)
                 .collect(Collectors.toList());
     }
 }

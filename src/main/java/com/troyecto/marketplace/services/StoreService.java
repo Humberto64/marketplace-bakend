@@ -2,13 +2,15 @@ package com.troyecto.marketplace.services;
 
 
 import com.troyecto.marketplace.dtos.StoreDTO;
+import com.troyecto.marketplace.dtos.store.StoreRequest;
+import com.troyecto.marketplace.dtos.store.StoreResponse;
 
 import java.util.List;
 
 public interface StoreService {
-    StoreDTO RegisterNewStore(StoreDTO storeDTO);
-    StoreDTO getStoreById(Long id);
-    StoreDTO UpdateStore(Long id, StoreDTO storeDTO);
+    StoreResponse RegisterNewStore(StoreRequest storeRequest);
+    StoreResponse getStoreById(Long id);
+    StoreResponse UpdateStore(Long id, StoreRequest storeRequest);
     String DeleteStore(Long id);
-    List<StoreDTO> getStores();
+    List<StoreResponse> getStores();
 }

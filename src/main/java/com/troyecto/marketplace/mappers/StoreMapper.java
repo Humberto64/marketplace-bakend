@@ -2,9 +2,14 @@ package com.troyecto.marketplace.mappers;
 
 import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.StoreDTO;
+import com.troyecto.marketplace.dtos.product.ProductRequest;
+import com.troyecto.marketplace.dtos.store.StoreRequest;
+import com.troyecto.marketplace.dtos.store.StoreResponse;
 import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.entities.Store;
 import com.troyecto.marketplace.entities.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,62 +17,60 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Component // Para que Spring pueda inyectarlo
-public class StoreMapper {
-
-    /**
-     * Convierte el DTO (recibido por red) en la Entity (para guardar en DB).
-     */
-    public static Store toEntity(StoreDTO dto) {
-        Store entity = new Store();
-
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setCategory(dto.getCategory());;
-        entity.setCreatedDate(dto.getCreatedDate());
-        entity.setIsActive(dto.getIsActive());
-        if(dto.getProducts() != null) {
-            dto.getProducts().stream()
-                    .filter(Objects::nonNull)
-                    .map(ProductMapper::mapProductDTOtoProduct)
-                    .forEach(entity::addProduct);
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+ // Para que Spring pueda inyectarlo
+public interface StoreMapper {
+    //DTO to Entity
+    default Store toEntity(StoreRequest storeRequest) {
+        if(storeRequest == null) {
+            return null;
         }
-
-        return entity;
+        Store store = new Store();
+        store.setName(storeRequest.getName());
+        store.setDescription(storeRequest.getDescription());
+        store.setCategory(storeRequest.getCategory());
+        store.setIsActive(storeRequest.getIsActive());
+        return store;
     }
-
-    /**
-     * Convierte la Entity (datos de DB) en un DTO (para responder por red).
-     */
-    public static StoreDTO toDTO(Store entity) {
-        StoreDTO dto = new StoreDTO();
-
-        dto.setName(entity.getName());
-        dto.setDescription(entity.getDescription());
-        dto.setCategory(entity.getCategory());
-        dto.setId(entity.getId());
-        dto.setCreatedDate(entity.getCreatedDate());
-        dto.setIsActive(entity.getIsActive());
-        User user=entity.getUser();
-        if(user!=null){
-            dto.setUserId(user.getId());
-            dto.setUserName(user.getFirstName()+" "+user.getLastName());
+    default StoreResponse toResponse(Store store) {
+        if(store == null) {
+            return null;
         }
-        List<ProductDTO> productDTO=null;
-        if(entity.getProducts() != null) {
-            productDTO=entity.getProducts()
+        StoreResponse storeResponse = new StoreResponse();
+        storeResponse.setId(store.getId());
+        storeResponse.setName(store.getName());
+        storeResponse.setDescription(store.getDescription());
+        storeResponse.setCategory(store.getCategory());
+        storeResponse.setIsActive(store.getIsActive());
+        if(store.getUser() != null) {
+            storeResponse.setUserId(store.getUser().getId());
+        }
+        if(store.getProducts() != null) {
+            storeResponse.setProductIds(store.getProducts()
                     .stream()
-                    .map(ProductMapper::mapProductToProductDTO)
-                    .collect(Collectors.toList());
+                    .map(Product-> Product.getId())
+                    .collect(Collectors.toList()));
+        }else{
+            storeResponse.setProductIds(new ArrayList<>());
         }
-        dto.setProducts(productDTO);
-        return dto;
+        return storeResponse;
+    }
+    default void updateEntityFromRequest(StoreRequest storeRequest, Store store) {
+        if (storeRequest == null || store == null) {
+            return;
+        }
+        if (storeRequest.getName() != null) {
+            store.setName(storeRequest.getName());
+        }
+        if (storeRequest.getDescription() != null) {
+            store.setDescription(storeRequest.getDescription());
+        }
+        if (storeRequest.getCategory() != null) {
+            store.setCategory(storeRequest.getCategory());
+        }
+        if (storeRequest.getIsActive() != null) {
+            store.setIsActive(storeRequest.getIsActive());
+        }
     }
 
-    // Comentarios generales sobre este mapper:
-    // - Se usan los métodos addProduct para mantener la relación bidireccional (setear Store en cada Product).
-    // - Al mapear entity.getProducts() hay que asegurarse que la colección esté inicializada (evitar LazyInitializationException).
-    //   Por eso, el mapeo de colecciones es más seguro dentro de una transacción o después de forzar la inicialización.
-    // - No se resuelven relaciones a partir de ids aquí (p. ej. userId -> User): eso debe hacerse en el servicio
-    //   porque el mapper no tiene acceso a repositorios ni contexto de persistencia.
 }

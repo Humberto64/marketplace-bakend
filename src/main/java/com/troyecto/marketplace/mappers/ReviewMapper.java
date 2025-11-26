@@ -1,46 +1,50 @@
 package com.troyecto.marketplace.mappers;
-import com.troyecto.marketplace.dtos.ReviewDTO;
-import com.troyecto.marketplace.entities.Product;
+import com.troyecto.marketplace.dtos.review.ReviewRequest;
+import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.entities.Review;
-import com.troyecto.marketplace.entities.User;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import java.util.ArrayList;
 
-public class ReviewMapper {
-    public static ReviewDTO mapReviewtoReviewDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setId(review.getId());
-        reviewDTO.setComment(review.getComment());
-        reviewDTO.setRating(review.getRating());
-        reviewDTO.setCreatedAt(review.getCreatedAt());
-        reviewDTO.setUpdatedAt(review.getUpdatedAt());
+import java.util.stream.Collectors;
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 
-        // Comentario:
-        // - Acceder a review.getProduct()/getUser() puede lanzar LazyInitializationException si la relación
-        //   es LAZY y no estamos dentro de una transacción. Asegurarse que el servicio cargue las relaciones si es necesario.
-        Product product=review.getProduct();
-        if(product!=null){
-            reviewDTO.setProductId(product.getId());
-            reviewDTO.setProductName(product.getName());
+public interface ReviewMapper {
+   default Review toEntity(ReviewRequest reviewRequest){
+        if ( reviewRequest == null ) {
+            return null;
         }
-        User user=review.getUser();
-        if(user!=null){
-            reviewDTO.setUserId(user.getId());
-            reviewDTO.setUserName(user.getFirstName()+" "+user.getLastName());
-        }
-
-        return reviewDTO;
-    }
-    public static Review mapReviewDTOtoReview(ReviewDTO reviewDTO) {
-        if(reviewDTO==null)return null;
         Review review = new Review();
-        review.setId(reviewDTO.getId());
-        review.setRating(reviewDTO.getRating());
-        review.setComment(reviewDTO.getComment());
-        review.setCreatedAt(reviewDTO.getCreatedAt());
-        review.setUpdatedAt(reviewDTO.getUpdatedAt());
+        review.setRating( reviewRequest.getRating() );
+        review.setComment( reviewRequest.getComment() );
 
-        // Comentario:
-        // - Aquí no se asignan product ni user: el mapper no debe buscar entidades por id (no tiene acceso a repositorios).
-        //   Esa asociación se debe hacer en el servicio (ver ReviewServiceImpls) donde se recuperan Product y User por id.
         return review;
-    }
+   }
+   default ReviewResponse toResponse(Review review){
+       if(review == null){
+              return null;
+       }
+         ReviewResponse reviewResponse = new ReviewResponse();
+            reviewResponse.setId( review.getId() );
+            reviewResponse.setRating( review.getRating() );
+            reviewResponse.setComment( review.getComment() );
+            if(review.getUser() != null){
+                reviewResponse.setUserId( review.getUser().getId() );
+            }
+            if(review.getProduct() != null){
+                reviewResponse.setProductId( review.getProduct().getId() );
+            }
+            return reviewResponse;
+   }
+   default void updateReviewFromRequest(ReviewRequest reviewRequest, Review review){
+        if (reviewRequest == null || review == null) {
+            return;
+        }
+        if (reviewRequest.getRating()!= null) {
+            review.setRating(reviewRequest.getRating() );
+        }
+        if (reviewRequest.getComment() != null) {
+            review.setComment( reviewRequest.getComment() );
+        }
+   }
 }

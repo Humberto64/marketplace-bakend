@@ -1,14 +1,15 @@
 package com.troyecto.marketplace.services;
-
 import com.troyecto.marketplace.dtos.ReviewDTO;
+import com.troyecto.marketplace.dtos.review.ReviewRequest;
+import com.troyecto.marketplace.dtos.review.ReviewResponse;
 
 import java.util.List;
 
 public interface ReviewService {
-    ReviewDTO createReview(ReviewDTO review);
-    ReviewDTO updateReview(Long id,ReviewDTO reviewdetails);
+    ReviewResponse createReview(ReviewRequest reviewRequest);
+    ReviewResponse updateReview(Long id,ReviewRequest reviewdetails);
     String deleteReview(Long id);
-    ReviewDTO getReviewById(Long id);
-    List<ReviewDTO> getAllReviews();
+    ReviewResponse getReviewById(Long id);
+    List<ReviewResponse> getAllReviews();
 }
 

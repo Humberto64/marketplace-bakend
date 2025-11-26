@@ -1,8 +1,12 @@
 package com.troyecto.marketplace.controllers;
 
+import com.troyecto.marketplace.common.ApiResponse;
 import com.troyecto.marketplace.dtos.ProductDTO;
+import com.troyecto.marketplace.dtos.product.ProductRequest;
+import com.troyecto.marketplace.dtos.product.ProductResponse;
 import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.services.ProductService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,29 +22,29 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO){
-        ProductDTO savedProduct= productService.createProduct(productDTO);
-        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@Valid @RequestBody ProductRequest productRequest) {
+        ProductResponse savedProduct= productService.createProduct(productRequest);
+        return  ResponseEntity.ok(ApiResponse.ok("Producto creado exitosamente", savedProduct));
         // Devuelve 201 Created cuando la creación es exitosa.
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts(){
-        List<ProductDTO> products= productService.getAllProducts();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<List<ProductResponse>>>getAllProducts(){
+        List<ProductResponse> products= productService.getAllProducts();
+        return  ResponseEntity.ok(ApiResponse.ok("Productos creado exitosamente", products));
         //  ResponseEntity.ok(products) es equivalente y más conciso.
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductsById(@PathVariable Long id){
-        ProductDTO productDTO=productService.getProductById(id);
-        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ProductResponse>> getProductsById(@PathVariable Long id){
+        ProductResponse productResponse=productService.getProductById(id);
+        return  ResponseEntity.ok(ApiResponse.ok("Producto encontrado exitosamente", productResponse));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO){
-        ProductDTO savedProduct=productService.updateProduct(id, productDTO);
-        return new ResponseEntity<>(savedProduct, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid@RequestBody ProductRequest productRequest){
+        ProductResponse savedProduct=productService.updateProduct(id, productRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Producto actualizado exitosamente", savedProduct));
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,8 @@
 package com.troyecto.marketplace.serviceimpls;
 
 import com.troyecto.marketplace.dtos.StoreDTO;
+import com.troyecto.marketplace.dtos.store.StoreRequest;
+import com.troyecto.marketplace.dtos.store.StoreResponse;
 import com.troyecto.marketplace.entities.Store;
 import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,55 +26,52 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+    private final StoreMapper storeMapper;
+
     @Override
-    public StoreDTO RegisterNewStore(StoreDTO storeDTO) {
-        if(storeRepository.existsByName(storeDTO.getName())){
-            throw new IllegalArgumentException("El nombre de la tienda '" + storeDTO.getName() + "' ya está en uso. Debe ser único.");
-        }
-        storeDTO.setCreatedDate(LocalDateTime.now());
-        storeDTO.setIsActive(true);
-        Store store = StoreMapper.toEntity(storeDTO);
-        User user=userRepository.findById(storeDTO.getUserId()).
-                orElseThrow(()->new ResourceNotFoundException("User not found"));
+    public StoreResponse RegisterNewStore(StoreRequest storeRequest) {
+        User user= userRepository.findById(storeRequest.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id:"+ storeRequest.getUserId()));
+        Store store=storeMapper.toEntity(storeRequest);
+        store.setCreatedDate(LocalDateTime.now());
         store.setUser(user);
-        Store savedStore = storeRepository.save(store);
-        return StoreMapper.toDTO(savedStore);
+        Store savedStore= storeRepository.save(store);
+        return storeMapper.toResponse(savedStore);
     }
 
     @Override
-    public StoreDTO getStoreById(Long id) {
-        Store store=storeRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Store no encontrada con id " + id));
-
-        return StoreMapper.toDTO(store);
+    public StoreResponse getStoreById(Long id) {
+        Store store= storeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
+        return storeMapper.toResponse(store);
     }
 
     @Override
-    public StoreDTO UpdateStore(Long id, StoreDTO storeDTO) {
-
-        Store store = storeRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("No se pudo Actualizar. Tienda no encontrada con id: " + id));
-        store.setName(storeDTO.getName());
-        store.setDescription(storeDTO.getDescription());
-        store.setCategory(storeDTO.getCategory());
-        Store updatedStore = storeRepository.save(store);
-        return StoreMapper.toDTO(updatedStore);
+    public StoreResponse UpdateStore(Long id, StoreRequest storeRequest) {
+        Store store= storeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
+        store.setName(storeRequest.getName());
+        store.setDescription(storeRequest.getDescription());
+        store.setIsActive(storeRequest.getIsActive());
+        store.setCategory(storeRequest.getCategory());
+        Store updatedStore= storeRepository.save(store);
+        return storeMapper.toResponse(updatedStore);
     }
 
     @Override
     public String DeleteStore(Long id) {
-        Store store = storeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No se puede eliminar. Tienda no encontrado con id: " + id));
+        Store store= storeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
         storeRepository.delete(store);
-        return "Store con ID "+ id +"eliminada exitosamente";
+        return "Store deleted successfully with id:"+ id;
     }
 
     @Override
-    public List<StoreDTO> getStores() {
-        List<Store> stores = storeRepository.findAll();
-        return stores.stream()
-                .map(StoreMapper::toDTO)
-                .toList();
+    public List<StoreResponse> getStores() {
+        return storeRepository.findAll()
+                .stream()
+                .map(storeMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     // Comentarios importantes sobre el servicio:

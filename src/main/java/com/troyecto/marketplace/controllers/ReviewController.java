@@ -1,7 +1,11 @@
 package com.troyecto.marketplace.controllers;
 
+import com.troyecto.marketplace.common.ApiResponse;
 import com.troyecto.marketplace.dtos.ReviewDTO;
+import com.troyecto.marketplace.dtos.review.ReviewRequest;
+import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.services.ReviewService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,24 +20,24 @@ import java.util.List;
 public class ReviewController {
     private ReviewService reviewService;
     @PostMapping
-    public ResponseEntity<ReviewDTO> createReview(@RequestBody ReviewDTO reviewDTO) {
-        ReviewDTO savedReview = reviewService.createReview(reviewDTO);
-        return new ResponseEntity<>(savedReview, HttpStatus.CREATED); // Devuelve el usuario creado y un código 201.
+    public ResponseEntity<ApiResponse<ReviewResponse>> createReview(@Valid @RequestBody ReviewRequest reviewRequest) {
+        ReviewResponse savedReview = reviewService.createReview(reviewRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Review creada existosamente",savedReview));// Devuelve el usuario creado y un código 201.
     }
     @GetMapping
-    public ResponseEntity<List<ReviewDTO>> getAllReviews() {
-        List<ReviewDTO> reviews = reviewService.getAllReviews();
-        return ResponseEntity.ok(reviews);
+    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getAllReviews() {
+        List<ReviewResponse> reviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(ApiResponse.ok("Reviews creada existosamente",reviews));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long id) {
-        ReviewDTO review = reviewService.getReviewById(id);
-        return new ResponseEntity<>(review, HttpStatus.OK); // Devuelve el usuario y un código 200.
+    public ResponseEntity<ApiResponse<ReviewResponse>> getReviewById(@PathVariable Long id) {
+        ReviewResponse review = reviewService.getReviewById(id);
+        return ResponseEntity.ok(ApiResponse.ok("producto encontrado exitosamente",review)); // Devuelve el usuario y un código 200.
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
-        ReviewDTO updatedReview = reviewService.updateReview(id, reviewDTO);
-        return new ResponseEntity<>(updatedReview, HttpStatus.OK);
+    public ResponseEntity<ApiResponse<ReviewResponse>> updateReview(@PathVariable Long id, @Valid@RequestBody ReviewRequest reviewRequest) {
+        ReviewResponse updatedReview = reviewService.updateReview(id, reviewRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Review actualizada existosamente",updatedReview));
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(@PathVariable Long id) {
