@@ -1,17 +1,9 @@
 package com.troyecto.marketplace.mappers;
-
-import com.troyecto.marketplace.dtos.OrderDTO;
-import com.troyecto.marketplace.dtos.ReviewDTO;
-import com.troyecto.marketplace.dtos.StoreDTO;
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.dtos.user.UserRequest;
 import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 

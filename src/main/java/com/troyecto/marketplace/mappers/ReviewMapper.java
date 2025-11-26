@@ -4,9 +4,6 @@ import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.entities.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import java.util.ArrayList;
-
-import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 
 public interface ReviewMapper {

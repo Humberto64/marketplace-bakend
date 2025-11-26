@@ -1,10 +1,6 @@
 package com.troyecto.marketplace.services;
-
-
-import com.troyecto.marketplace.dtos.StoreDTO;
 import com.troyecto.marketplace.dtos.store.StoreRequest;
 import com.troyecto.marketplace.dtos.store.StoreResponse;
-
 import java.util.List;
 
 public interface StoreService {

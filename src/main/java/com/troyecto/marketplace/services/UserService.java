@@ -1,9 +1,6 @@
 package com.troyecto.marketplace.services;
-
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.dtos.user.UserRequest;
 import com.troyecto.marketplace.dtos.user.UserResponse;
-
 import java.util.List;
 
 

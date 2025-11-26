@@ -1,12 +1,9 @@
 package com.troyecto.marketplace.serviceimpls;
 
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.dtos.user.UserRequest;
 import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
-import com.troyecto.marketplace.mappers.OrderMapper;
-import com.troyecto.marketplace.mappers.ReviewMapper;
 import com.troyecto.marketplace.mappers.UserMapper;
 import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.UserService;

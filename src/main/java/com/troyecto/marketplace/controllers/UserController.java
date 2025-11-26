@@ -2,7 +2,6 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.common.ApiResponse;
-import com.troyecto.marketplace.dtos.UserDTO;
 import com.troyecto.marketplace.dtos.user.UserRequest;
 import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.services.UserService;

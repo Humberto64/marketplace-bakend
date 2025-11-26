@@ -1,5 +1,4 @@
 package com.troyecto.marketplace.mappers;
-
 import com.troyecto.marketplace.dtos.product.ProductRequest;
 import com.troyecto.marketplace.dtos.product.ProductResponse;
 import com.troyecto.marketplace.entities.Product;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 
 import java.util.stream.Collectors;
 
-
+//Prueba
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 

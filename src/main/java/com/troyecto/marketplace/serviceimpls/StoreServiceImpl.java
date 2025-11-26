@@ -1,6 +1,4 @@
 package com.troyecto.marketplace.serviceimpls;
-
-import com.troyecto.marketplace.dtos.StoreDTO;
 import com.troyecto.marketplace.dtos.store.StoreRequest;
 import com.troyecto.marketplace.dtos.store.StoreResponse;
 import com.troyecto.marketplace.entities.Store;
