@@ -1,13 +1,11 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.common.ApiResponse;
-import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.dtos.review.ReviewRequest;
 import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.services.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,10 +1,8 @@
 package com.troyecto.marketplace.controllers;
 
 import com.troyecto.marketplace.common.ApiResponse;
-import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.product.ProductRequest;
 import com.troyecto.marketplace.dtos.product.ProductResponse;
-import com.troyecto.marketplace.entities.Product;
 import com.troyecto.marketplace.services.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

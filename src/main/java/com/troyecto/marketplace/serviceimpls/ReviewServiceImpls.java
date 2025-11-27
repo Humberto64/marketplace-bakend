@@ -1,6 +1,5 @@
 package com.troyecto.marketplace.serviceimpls;
 
-import com.troyecto.marketplace.dtos.ReviewDTO;
 import com.troyecto.marketplace.dtos.review.ReviewRequest;
 import com.troyecto.marketplace.dtos.review.ReviewResponse;
 import com.troyecto.marketplace.entities.Product;
@@ -8,14 +7,10 @@ import com.troyecto.marketplace.entities.Review;
 import com.troyecto.marketplace.entities.User;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.ReviewMapper;
-import com.troyecto.marketplace.mappers.UserMapper;
 import com.troyecto.marketplace.repositories.ProductRepository;
 import com.troyecto.marketplace.repositories.ReviewRepository;
 import com.troyecto.marketplace.repositories.UserRepository;
-import com.troyecto.marketplace.services.ProductService;
 import com.troyecto.marketplace.services.ReviewService;
-import com.troyecto.marketplace.services.UserService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,9 +45,14 @@ public class ReviewServiceImpls implements ReviewService {
     public ReviewResponse updateReview(Long id, ReviewRequest reviewdetails) {
         Review review=reviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Review not found with id"+id));
-        review.setRating(reviewdetails.getRating());
-        review.setComment(reviewdetails.getComment());
+        User user= userRepository.findById(reviewdetails.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id"+reviewdetails.getUserId()));
+        Product product= productRepository.findById(reviewdetails.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id"+reviewdetails.getProductId()));
+        reviewMapper.updateReviewFromRequest(reviewdetails, review);
         review.setUpdatedAt(LocalDateTime.now());
+        review.setUser(user);
+        review.setProduct(product);
         Review updatedReview= reviewRepository.save(review);
         return reviewMapper.toResponse(updatedReview);
     }

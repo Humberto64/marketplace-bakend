@@ -46,9 +46,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     public OrderItemResponse updateOrderItem(Long id, OrderItemRequest orderItemRequest) {
         OrderItem orderItem = orderItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("OrderItem not found"));
-        orderItem.setQuantity(orderItemRequest.getQuantity());
-        orderItem.setPrice(orderItemRequest.getPrice());
-        orderItem.setSubtotal(orderItemRequest.getSubtotal());
+        Order order = orderRepository.findById(orderItemRequest.getOrderId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order"));
+        Product product = productRepository.findById(orderItemRequest.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product"));
+        orderItemMapper.updateOrderItemFromRequest(orderItemRequest,orderItem);
+        orderItem.setOrder(order);
+        orderItem.setProduct(product);
         return orderItemMapper.mapOrderItemToOrderItemResponse(orderItemRepository.save(orderItem));
     }
 

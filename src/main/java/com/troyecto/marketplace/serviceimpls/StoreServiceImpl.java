@@ -10,7 +10,6 @@ import com.troyecto.marketplace.repositories.UserRepository;
 import com.troyecto.marketplace.services.StoreService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Transactional
 public class StoreServiceImpl implements StoreService {
-    @Autowired
+
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final StoreMapper storeMapper;
@@ -48,10 +47,12 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponse UpdateStore(Long id, StoreRequest storeRequest) {
         Store store= storeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
-        store.setName(storeRequest.getName());
-        store.setDescription(storeRequest.getDescription());
-        store.setIsActive(storeRequest.getIsActive());
-        store.setCategory(storeRequest.getCategory());
+
+        User user = userRepository.findById(storeRequest.getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found with id:"+ storeRequest.getUserId()));
+
+        storeMapper.updateEntityFromRequest(storeRequest,store);
+        store.setUser(user);
         Store updatedStore= storeRepository.save(store);
         return storeMapper.toResponse(updatedStore);
     }

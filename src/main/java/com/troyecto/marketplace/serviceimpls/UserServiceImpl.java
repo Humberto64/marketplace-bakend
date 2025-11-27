@@ -21,10 +21,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponse createUser(UserResponse userResponse) {
-        User user=userRepository.findById(userResponse.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userResponse.getId()));
-        return userMapper.toResponse(user);
+    public UserResponse createUser(UserRequest userRequest) {
+        User user = userMapper.toEntity(userRequest);
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     @Override
@@ -45,14 +44,8 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(Long id, UserRequest userRequest) {
         User user=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
-        user.setEmail(userRequest.getEmail());
-        user.setRole(userRequest.getRole());
-        user.setPhone(userRequest.getPhone());
-        user.setAddress(userRequest.getAddress());
-        User updatedUser=userRepository.save(user);
-        return userMapper.toResponse(updatedUser);
+        userMapper.updateUserFromDto(userRequest,user);
+        return userMapper.toResponse(userRepository.save(user));
     }
 
     @Override

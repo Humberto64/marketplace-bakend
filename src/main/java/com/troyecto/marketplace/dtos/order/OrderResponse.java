@@ -1,6 +1,5 @@
 package com.troyecto.marketplace.dtos.order;
 
-import com.troyecto.marketplace.dtos.OrderItemDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

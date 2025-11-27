@@ -26,10 +26,10 @@ public class UserController {
     // Endpoint para CREAR un usuario.
     // Se activa con una petición POST a http://localhost:8080/api/users
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody UserResponse userResponse) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody UserRequest userRequest) {
         // Comentario:
         // - Aquí se recomienda usar @Valid en el parámetro y anotar UserDTO con constraints para validación automática.
-        UserResponse savedUser = userService.createUser(userResponse);
+        UserResponse savedUser = userService.createUser(userRequest);
         return ResponseEntity.ok(ApiResponse.ok("User creado con exito",savedUser)); // Devuelve el usuario creado y un código 201.
     }
 

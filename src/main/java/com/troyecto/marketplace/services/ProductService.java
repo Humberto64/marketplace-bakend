@@ -1,6 +1,5 @@
 package com.troyecto.marketplace.services;
 
-import com.troyecto.marketplace.dtos.ProductDTO;
 import com.troyecto.marketplace.dtos.product.ProductRequest;
 import com.troyecto.marketplace.dtos.product.ProductResponse;
 

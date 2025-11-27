@@ -38,10 +38,10 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         Product product=productRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Product not found with id: "+id));
-        product.setName(productRequest.getName());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
-        product.setStock(productRequest.getStock());
+        Store store=storeRepository.findById(productRequest.getStoreId())
+                .orElseThrow(()->new ResourceNotFoundException("Store not found with id: "+productRequest.getStoreId()));
+        productMapper.updateProductFromRequest(productRequest,product);
+        product.setStore(store);
         Product updatedProduct=productRepository.save(product);
         return productMapper.mapProductToProductResponse(updatedProduct);
     }

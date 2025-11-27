@@ -24,7 +24,6 @@ public class OrderServiceImpls implements OrderService {
     private final UserRepository userRepository;
     private final OrderMapper orderMapper;
 
-
     @Override
     public OrderResponse createOrder(OrderRequest orderRequest) {
         User user=userRepository.findById(orderRequest.getUserId())
@@ -40,12 +39,10 @@ public class OrderServiceImpls implements OrderService {
     public OrderResponse updateOrder(Long id, OrderRequest orderRequest) {
         Order  order=orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        order.setSubtotal(orderRequest.getSubtotal());
-        order.setTotalAmount(orderRequest.getTotalAmount());
-        order.setTax(orderRequest.getTax());
-        order.setPayMethod(orderRequest.getPayMethod());
-        order.setCurrency(orderRequest.getCurrency());
-        order.setPaymentStatus(orderRequest.getPaymentStatus());
+        User user=userRepository.findById(orderRequest.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        orderMapper.updateOrderFromRequest(orderRequest,order);
+        order.setUser(user);
         Order updatedOrder=orderRepository.save(order);
         return orderMapper.mapOrderToOrderResponse(updatedOrder);
     }
