@@ -34,6 +34,7 @@ public interface StoreMapper {
         storeResponse.setDescription(store.getDescription());
         storeResponse.setCategory(store.getCategory());
         storeResponse.setIsActive(store.getIsActive());
+        storeResponse.setCreatedDate(store.getCreatedDate());
         if(store.getUser() != null) {
             storeResponse.setUserId(store.getUser().getId());
         }

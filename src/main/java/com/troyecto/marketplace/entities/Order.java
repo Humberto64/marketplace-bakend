@@ -28,7 +28,7 @@ public class Order {
     //@Column(nullable = false)
     private Integer totalAmount;
     @Column(nullable = false)
-    private Integer tax;
+    private Double tax;
     @Column(nullable = false)
     private String currency;
     @Column(nullable = false)

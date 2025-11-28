@@ -34,9 +34,10 @@ public interface OrderMapper {
         orderResponse.setCurrency(order.getCurrency());
         orderResponse.setPayMethod(order.getPayMethod());
         orderResponse.setPaymentStatus(order.getPaymentStatus());
-
+        orderResponse.setOrderDate(order.getOrderDate());
         if (order.getUser() != null) {
             orderResponse.setUserId(order.getUser().getId());
+            orderResponse.setUserName(order.getUser().getFirstName() + " " + order.getUser().getLastName());
         }
         if(order.getOrderItems() != null) {
             orderResponse.setOrderItemsId(

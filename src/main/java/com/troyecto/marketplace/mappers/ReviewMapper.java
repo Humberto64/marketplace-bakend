@@ -25,6 +25,8 @@ public interface ReviewMapper {
             reviewResponse.setId( review.getId() );
             reviewResponse.setRating( review.getRating() );
             reviewResponse.setComment( review.getComment() );
+            reviewResponse.setCreatedDate( review.getCreatedAt());
+            reviewResponse.setUpdatedDate( review.getUpdatedAt());
             if(review.getUser() != null){
                 reviewResponse.setUserId( review.getUser().getId() );
             }

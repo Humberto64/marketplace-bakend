@@ -19,6 +19,7 @@ public class StoreResponse {
     private String description;
     private String category;
     private Boolean isActive;
+    private LocalDateTime createdDate;
 
     private Long userId;
     private List<Long> productIds;

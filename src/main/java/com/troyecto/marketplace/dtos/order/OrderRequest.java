@@ -22,7 +22,7 @@ public class OrderRequest {
     private Integer totalAmount;
 
     @NotNull
-    private Integer tax;
+    private Double tax;
 
     @NotBlank
     private String currency;

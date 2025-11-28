@@ -22,6 +22,7 @@ public interface ProductMapper {
         product.setDescription(productRequest.getDescription());
         product.setPrice(productRequest.getPrice());
         product.setStock(productRequest.getStock());
+        product.setIsAvailable(productRequest.getIsAvailable());
         return product;
 
     }
@@ -34,9 +35,12 @@ public interface ProductMapper {
         productResponse.setDescription(product.getDescription());
         productResponse.setPrice(product.getPrice());
         productResponse.setStock(product.getStock());
+        productResponse.setIsAvailable(product.getIsAvailable());
+        productResponse.setPublishedDate(product.getPublishedDate());
         // Mapear storeId
         if(product.getStore() != null){
             productResponse.setStoreId(product.getStore().getId());
+            productResponse.setStoreName(product.getStore().getName());
         }
         // Mapear reviewIds
         if(product.getReviews() != null){
@@ -74,6 +78,9 @@ public interface ProductMapper {
         }
         if (productRequest.getStock() != null) {
             product.setStock(productRequest.getStock());
+        }
+        if (productRequest.getIsAvailable() != null) {
+            product.setIsAvailable(productRequest.getIsAvailable());
         }
     }
 

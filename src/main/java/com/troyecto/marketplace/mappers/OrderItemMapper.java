@@ -31,6 +31,7 @@ public interface OrderItemMapper {
         }
         if(orderItem.getProduct() != null) {
             orderItemResponse.setProductId(orderItem.getProduct().getId());
+            orderItemResponse.setProductName(orderItem.getProduct().getName());
         }
         return orderItemResponse;
     }

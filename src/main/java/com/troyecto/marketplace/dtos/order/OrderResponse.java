@@ -17,7 +17,7 @@ public class OrderResponse {
     private Long id;
     private Double subtotal;
     private Integer totalAmount;
-    private Integer tax;
+    private Double tax;
     private String currency;
     private String payMethod;
     private String paymentStatus;

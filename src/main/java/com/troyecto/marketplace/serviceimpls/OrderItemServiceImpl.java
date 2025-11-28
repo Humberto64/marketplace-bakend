@@ -53,6 +53,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         orderItemMapper.updateOrderItemFromRequest(orderItemRequest,orderItem);
         orderItem.setOrder(order);
         orderItem.setProduct(product);
+        updateOrderTotals(orderItem.getOrder().getId());
         return orderItemMapper.mapOrderItemToOrderItemResponse(orderItemRepository.save(orderItem));
     }
 
@@ -89,6 +90,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         int totalAmount = order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum();
         order.setSubtotal(subtotal);
         order.setTotalAmount(totalAmount);
+        order.setTax(subtotal * 0.05);
         orderRepository.save(order);
     }
 }
