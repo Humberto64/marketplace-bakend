@@ -49,14 +49,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 🧾 Extraer el token JWT (sin la palabra "Bearer ")
         jwt = authHeader.substring(7);
 
-        // 👤 Extraer usuario desde el token
-        username = jwtService.extractUsername(jwt);
+// 👤 Extraer usuario desde el token, manejando expiración / token inválido;
+        try {
+            username = jwtService.extractUsername(jwt);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            // Token expirado -> devolvemos 401 para que el cliente actúe (refresh / logout)
+            System.out.println("JWT expirado: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("JWT expired");
+            return;
+        } catch (io.jsonwebtoken.JwtException e) {
+            // Token mal formado, firma inválida, etc.
+            System.out.println("JWT inválido: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid JWT");
+            return;
+        }
 
-        // 🔐 Validar token si aún no hay autenticación en contexto
+// 🔐 Validar token si aún no hay autenticación en contexto
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            // ✅ Validar correctamente con el objeto UserDetails
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
@@ -69,6 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
 
         // 🚀 Continuar con la cadena de filtros
         filterChain.doFilter(request, response);

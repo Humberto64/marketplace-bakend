@@ -1,7 +1,6 @@
 package com.troyecto.marketplace.dtos.store;
 
-import com.troyecto.marketplace.entities.User;
-import jakarta.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
