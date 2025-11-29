@@ -27,16 +27,8 @@ public class AuthServiceImpl implements AuthService {
         AuthUser user = new AuthUser();
 
         // Evitar errores de null en firstname / lastname
-        user.setFirstname(
-                request.getFirstName() != null && !request.getFirstName().isBlank()
-                        ? request.getFirstName()
-                        : "User"
-        );
-        user.setLastname(
-                request.getLastName() != null && !request.getLastName().isBlank()
-                        ? request.getFirstName()
-                        : "Default"
-        );
+        user.setFirstname(request.getFirstName());
+        user.setLastname(request.getLastName());
 
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));

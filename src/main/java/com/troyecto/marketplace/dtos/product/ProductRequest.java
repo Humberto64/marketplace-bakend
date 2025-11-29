@@ -17,27 +17,27 @@ import java.time.LocalDateTime;
 @Builder
 public class ProductRequest {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "Name cannot be null")
     private String name;
 
-    @NotBlank(message = "La descripción es obligatoria")
+    @NotBlank(message = "Description cannot be null")
     private String description;
 
-    @NotNull(message = "El precio es obligatorio")
-    @Positive(message = "El precio debe ser mayor que cero")
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price must be greater than zero")
     private BigDecimal price;
 
-    @NotNull(message = "El stock es obligatorio")
-    @Positive(message = "El stock debe ser mayor o igual a cero")
+    @NotNull(message = "Stock cannot be null")
+    @Positive(message = "Stock must be greater than zero")
     private Integer stock;
 
     private LocalDateTime publishedDate;
 
-    @NotNull(message = "La disponibilidad es obligatoria")
+    @NotNull(message = "Availability cannot be null")
     private Boolean isAvailable;
 
     // Lo importante para crear el Product es el storeId.
-    @NotNull(message = "La tienda es obligatoria")
+    @NotNull(message = "Store Id cannot be null")
     private Long storeId;
 
     // Este campo normalmente no es necesario en el request, pero si quieres permitir que te lo manden, lo dejas opcional
