@@ -28,7 +28,7 @@ public class User {
     // Nota: usar Long para phone puede estar bien, pero en muchos casos es mejor String
     // para preservar ceros a la izquierda y símbolos internacionales.
     @Column(nullable = false, unique = true)
-    private Long phone;
+    private String phone;
     @Column(nullable = false)
     private String address;
     @Column(nullable = false, unique = true)

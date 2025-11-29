@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class OrderItemRequest {
 
-    @NotNull
+    @NotNull(message = "Quantity cannot be null")
     private Integer quantity;
 
     @NotNull
@@ -21,7 +21,7 @@ public class OrderItemRequest {
     @NotNull
     private Double subtotal;
 
-    @NotNull
+    @NotNull(message = "Must specify order id")
     private Long orderId;
 
     @NotNull

@@ -35,7 +35,7 @@ public class OrderRequest {
 
     private LocalDateTime orderDate;
 
-    @NotNull (message = "El usuario es obligatorio")
+    @NotNull (message = "User Id cannot be null")
     private Long userId;
 
     private String userName;

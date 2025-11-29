@@ -88,7 +88,7 @@ public class OrderItemServiceImpl implements OrderItemService {
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         double subtotal = order.getOrderItems().stream().mapToDouble(OrderItem::getSubtotal).sum();
         int totalAmount = order.getOrderItems().stream().mapToInt(OrderItem::getQuantity).sum();
-        order.setSubtotal(subtotal);
+        order.setSubtotal(subtotal + subtotal * 0.05);
         order.setTotalAmount(totalAmount);
         order.setTax(subtotal * 0.05);
         orderRepository.save(order);
