@@ -17,7 +17,7 @@ public class UserResponse {
     private String lastName;
     // Nota: usar Long para phone puede estar bien, pero en muchos casos es mejor String
     // para preservar ceros a la izquierda y símbolos internacionales.
-    private Long phone;
+    private String phone;
     private String address;
     private String email;
     private String role;

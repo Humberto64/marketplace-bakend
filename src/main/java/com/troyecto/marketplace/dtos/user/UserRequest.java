@@ -1,10 +1,6 @@
 package com.troyecto.marketplace.dtos.user;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,8 +18,11 @@ public class UserRequest {
     // Nota: usar Long para phone puede estar bien, pero en muchos casos es mejor String
     // para preservar ceros a la izquierda y símbolos internacionales.
     @NotNull(message = "Phone number cannot be null")
-    @Size( min = 8, max = 20, message = "Phone must be in between 8 and 20 digits")
-    private Long phone;
+    @Pattern(
+            regexp = "\\d{8}",
+            message = "Phone must have exactly 8 numeric digits"
+    )
+    private String phone;
     @NotBlank(message = "Address cannot be null")
     private String address;
     @NotBlank(message = "Email cannot be null")
