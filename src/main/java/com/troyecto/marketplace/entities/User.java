@@ -41,42 +41,15 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Order> orders = new ArrayList<>();
-
-    public void addOrder(Order order) {
-        orders.add(order);
-        order.setUser(this);
-    }
-    public void removeOrder(Order order) {
-        orders.remove(order);
-        order.setUser(null);
-    }
-
     // Relación OneToMany con Review:
     // - @JsonBackReference evita serialización recursiva; la otra parte (Review) debería usar @JsonManagedReference.
     // - Atención: OneToMany por defecto es LAZY; acceder a reviews fuera de una transacción puede lanzar LazyInitializationException.
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
     private List<Review> reviews = new ArrayList<>();
-    public void addReview(Review review) {
-        reviews.add(review);
-        review.setUser(this);
-    }
-    public void removeReview(Review review) {
-        reviews.remove(review);
-        review.setUser(null);
-    }
-
     // Relación OneToMany con Store:
     // - misma lógica que las anteriores: mantener consistencia bidireccional usando add/remove.
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonBackReference
     private List<Store> stores = new ArrayList<>();
-    public void addStore(Store store) {
-        stores.add(store);
-        store.setUser(this);
-    }
-    public void removeStore(Store store) {
-        stores.remove(store);
-        store.setUser(null);
-    }
 }

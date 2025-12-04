@@ -4,6 +4,7 @@ import com.troyecto.marketplace.dtos.order.OrderRequest;
 import com.troyecto.marketplace.dtos.order.OrderResponse;
 import com.troyecto.marketplace.entities.Order;
 import com.troyecto.marketplace.entities.User;
+import com.troyecto.marketplace.exceptions.BusinessRuleException;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.OrderMapper;
 import com.troyecto.marketplace.repositories.OrderRepository;
@@ -51,6 +52,9 @@ public class OrderServiceImpls implements OrderService {
     public String deleteOrder(Long id) {
         Order order=orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        if(!order.getOrderItems().isEmpty()){
+            throw new BusinessRuleException("Cannot delete order with associated order items");
+        }
         orderRepository.delete(order);
         return "Order deleted with id " + id;
     }

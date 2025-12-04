@@ -38,21 +38,10 @@ public class Store {
             foreignKey =@ForeignKey(name ="fk_store_user"))
     @JsonBackReference
     private User user;
-
     @OneToMany(mappedBy ="store",cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference
     private List<Product> products=new ArrayList<>();
     // - Se inicializa la lista para evitar NullPointerException al añadir/quitar elementos.
     // - orphanRemoval = true: si un Product se elimina de esta lista y no está referenciado en otra parte,
     //   JPA lo borrará de la BD al persistir.
-    public void  addProduct(Product product) {
-        products.add(product);
-        product.setStore(this);
-    }
-    // - Mantener ambas referencias (añadir a la lista y setear store en Product) es crucial para que JPA
-    //   detecte correctamente los cambios en la relación bidireccional.
-    public void  removeProduct(Product product) {
-        products.remove(product);
-        product.setStore(null);
-    }
 }

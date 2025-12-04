@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController // Le dice a Spring que esta clase es un controlador que manejará peticiones REST.
 @RequestMapping("/api/orders")
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class OrderController {
 

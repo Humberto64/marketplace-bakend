@@ -3,6 +3,7 @@ import com.troyecto.marketplace.dtos.store.StoreRequest;
 import com.troyecto.marketplace.dtos.store.StoreResponse;
 import com.troyecto.marketplace.entities.Store;
 import com.troyecto.marketplace.entities.User;
+import com.troyecto.marketplace.exceptions.BusinessRuleException;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.StoreMapper;
 import com.troyecto.marketplace.repositories.StoreRepository;
@@ -27,6 +28,9 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public StoreResponse RegisterNewStore(StoreRequest storeRequest) {
+        if(storeRepository.existsByName(storeRequest.getName())){
+            throw new BusinessRuleException("Store with name '"+ storeRequest.getName() + "' already exists.");
+        }
         User user= userRepository.findById(storeRequest.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id:"+ storeRequest.getUserId()));
         Store store=storeMapper.toEntity(storeRequest);
@@ -48,6 +52,10 @@ public class StoreServiceImpl implements StoreService {
         Store store= storeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
 
+        if(!store.getName().equals(storeRequest.getName())
+                && storeRepository.existsByName(storeRequest.getName())){
+            throw new BusinessRuleException("Store with name '"+ storeRequest.getName() + "' already exists.");
+        }
         User user = userRepository.findById(storeRequest.getUserId())
                         .orElseThrow(() -> new ResourceNotFoundException("User not found with id:"+ storeRequest.getUserId()));
 
@@ -61,6 +69,9 @@ public class StoreServiceImpl implements StoreService {
     public String DeleteStore(Long id) {
         Store store= storeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with id:"+ id));
+        if(!store.getProducts().isEmpty()){
+            throw new BusinessRuleException("Cannot delete store with id:"+ id + " because it has associated products.");
+        }
         storeRepository.delete(store);
         return "Store deleted successfully with id:"+ id;
     }

@@ -3,6 +3,7 @@ package com.troyecto.marketplace.serviceimpls;
 import com.troyecto.marketplace.dtos.user.UserRequest;
 import com.troyecto.marketplace.dtos.user.UserResponse;
 import com.troyecto.marketplace.entities.User;
+import com.troyecto.marketplace.exceptions.BusinessRuleException;
 import com.troyecto.marketplace.exceptions.ResourceNotFoundException;
 import com.troyecto.marketplace.mappers.UserMapper;
 import com.troyecto.marketplace.repositories.UserRepository;
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createUser(UserRequest userRequest) {
+        if(userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new BusinessRuleException("Email already in use: " + userRequest.getEmail());
+        }
         User user = userMapper.toEntity(userRequest);
         return userMapper.toResponse(userRepository.save(user));
     }
@@ -44,6 +48,10 @@ public class UserServiceImpl implements UserService {
     public UserResponse updateUser(Long id, UserRequest userRequest) {
         User user=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        if(!user.getEmail().equals(userRequest.getEmail()) &&
+                userRepository.existsByEmail(userRequest.getEmail())) {
+            throw new BusinessRuleException("Email already in use: " + userRequest.getEmail());
+        }
         userMapper.updateUserFromDto(userRequest,user);
         return userMapper.toResponse(userRepository.save(user));
     }
@@ -52,6 +60,9 @@ public class UserServiceImpl implements UserService {
     public String deleteUser(Long id) {
         User user=userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        if(!user.getOrders().isEmpty()){
+            throw new BusinessRuleException("Cannot delete user with existing orders. User id: " + id);
+        }
         userRepository.delete(user);
         return "User deleted successfully with id: " + id;
     }

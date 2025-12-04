@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * ✔ Habilita documentación interactiva de la API con Swagger UI (OpenAPI 3)
  * ✔ Añade soporte para autenticación JWT tipo Bearer
  * ✔ Permite probar /api/auth/login y /api/auth/register directamente
- * ✔ URL de acceso: http://localhost:8080/swagger-ui/index.html
+ * ✔ URL de acceso: https://marketplace-bakend-production.up.railway.app/swagger-ui/index.html
  */
 @Configuration
 public class SwaggerConfig {

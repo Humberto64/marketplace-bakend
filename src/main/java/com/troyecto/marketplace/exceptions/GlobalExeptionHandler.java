@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * 🌐 GlobalExceptionHandler
  * ------------------------------------------------------------
- * Centraliza el manejo de errores de toda la aplicación EMSX.
+ * Centraliza el manejo de errores de toda la aplicación MARKETPLACE.
  *
  * ✅ Unifica respuestas JSON con formato ApiResponse<T>.
  * ✅ Captura excepciones de validación, negocio y sistema.

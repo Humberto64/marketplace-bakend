@@ -48,7 +48,7 @@ public class Order {
     @JsonBackReference
     private List<OrderItem> orderItems = new ArrayList<>();
     // Es importante mantener la consistencia de la relación bidireccional
-    public void addOrderItem(OrderItem orderItem){
+   /* public void addOrderItem(OrderItem orderItem){
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
@@ -57,7 +57,7 @@ public class Order {
     public void removeOrderItem(OrderItem orderItem){
         orderItems.remove(orderItem);
         orderItem.setOrder(null);
-    }
+    }*/
 
     public void recalculateTotals() {
         this.subtotal = orderItems.stream()
