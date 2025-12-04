@@ -113,13 +113,13 @@
         </dependency>
 
     <!-- ✅ OpenAPI / Swagger UI -->
-    <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>2.3.0</version>
-    </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.14</version>
+        </dependency>
 
-    <!-- ✅ Dotenv (para variables del entorno) -->
+        <!-- ✅ Dotenv (para variables del entorno) -->
     <dependency>
         <groupId>io.github.cdimascio</groupId>
         <artifactId>java-dotenv</artifactId>
